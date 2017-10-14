@@ -10,7 +10,8 @@ def menu():
         '4. Remove a trade',
         '5. View wins to losses',
         '6. View menu',
-        '7. Show trading rules'
+        '7. Show trading rules',
+        '8. Exit program'
     ]
 
     for item in menu_list:
@@ -24,7 +25,7 @@ def validate_int(value):
             return False
         else:
             break
-    if value < 1 or value > 7:
+    if value < 1 or value > 8:
         return False
     else:
         return value
@@ -53,6 +54,8 @@ entered = validate_int(option)
 if(entered != False):
     if(entered == 7):
         show_rules()
+    if(entered == 8):
+        sys.exit('Trade Log exited')
 
     print('good')
     print('You entered', entered)
