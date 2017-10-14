@@ -36,7 +36,7 @@ def validate_int(value):
 def show_rules(db):
     #TODO finish adding trading rules
     cur = db.cursor()
-    cur.execute("SELECT rule FROM trade_rules")
+    cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
     #print(cur.description)
 
     for row in cur.fetchall():
