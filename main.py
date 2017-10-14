@@ -1,5 +1,8 @@
 import sys
 import os
+import pymysql
+
+db = pymysql.connect( host='localhost', port=3306, user='root', passwd='', db='trade_log' )
 
 def menu():
     #TODO finish adding menu items
@@ -30,18 +33,16 @@ def validate_int(value):
     else:
         return value
 
-def show_rules():
+def show_rules(db):
     #TODO finish adding trading rules
-    rules = [
-        'Patience - with winners',
-        'Options spreads (be a seller of premium) - limit risk (less strict on stops because hedged)',
-        'Mental stop losses ES = around 20pts - at some point you have to take a loss if wrong, forex 200 pips, stocks 20pts while scaling out - actually put hard stops in to protect against emotion',
-        'Never take a trade based off someone else\'s opinion - do own research',
-        'Never pick tops or bottoms against a big trend'
-    ]
+    cur = db.cursor()
+    cur.execute("SELECT rule FROM trade_rules")
+    #print(cur.description)
 
-    for item in rules:
-        print(item)
+    for row in cur.fetchall():
+        print(row)
+
+    cur.close()
 
 # functions end - start running
 
@@ -57,11 +58,13 @@ while True:
         if(entered == 6):
             menu()
         if(entered == 7):
-            show_rules()
+            show_rules(db)
         if(entered == 8):
             sys.exit('Trade Log exited')
 
         print('good')
-        print('You entered', entered)
+        print('You entered ', entered)
     else:
         print('Not a vaild option')
+
+db.close()
