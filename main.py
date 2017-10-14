@@ -48,16 +48,20 @@ def show_rules():
 menu()
 
 print('--------')
-option = input('Choose option')
-entered = validate_int(option)
 
-if(entered != False):
-    if(entered == 7):
-        show_rules()
-    if(entered == 8):
-        sys.exit('Trade Log exited')
+while True:
+    option = input('Choose option')
+    entered = validate_int(option)
 
-    print('good')
-    print('You entered', entered)
-else:
-    print('Not a vaild option')
+    if(entered != False):
+        if(entered == 6):
+            menu()
+        if(entered == 7):
+            show_rules()
+        if(entered == 8):
+            sys.exit('Trade Log exited')
+
+        print('good')
+        print('You entered', entered)
+    else:
+        print('Not a vaild option')
