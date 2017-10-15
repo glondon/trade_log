@@ -40,7 +40,7 @@ def show_rules(db):
     #print(cur.description)
 
     for row in cur.fetchall():
-        print(row)
+        print(row[0])
 
     cur.close()
 
