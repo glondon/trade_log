@@ -80,6 +80,7 @@ def show_trade_plan(db):
     cur = db.cursor()
     query = "SELECT ticker, notes FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY ticker DESC"
     cur.execute(query)
+
     print('-----------')
     print('Trde ideas:')
     print('-----------')
@@ -104,13 +105,13 @@ while True:
     entered = validate_int(option)
 
     if(entered != False):
-        if(entered == 6):
+        if entered == 6:
             menu()
-        if(entered == 7):
+        if entered == 7:
             show_rules(db)
-        if(entered == 8):
+        if entered == 8:
             sys.exit('Trade Log exited')
-        if(entered == 9):
+        if entered == 9:
             show_watchlist(db)
         if entered == 10:
             show_trade_plan(db)
