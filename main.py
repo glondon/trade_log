@@ -14,7 +14,8 @@ def menu():
         '5. View wins to losses',
         '6. View menu',
         '7. Show trading rules',
-        '8. Exit program'
+        '8. Exit program',
+        '9. Show watchlist'
     ]
 
     for item in menu_list:
@@ -28,7 +29,7 @@ def validate_int(value):
             return False
         else:
             break
-    if value < 1 or value > 8:
+    if value < 1 or value > 9:
         return False
     else:
         return value
@@ -42,6 +43,20 @@ def show_rules(db):
     print('--------------')
     print('Trading Rules:')
     print('--------------')
+
+    for row in cur.fetchall():
+        print(row[0])
+
+    cur.close()
+
+def show_watchlist(db):
+    #TODO finish adding watchlist items
+    cur = db.cursor()
+    cur.execute("SELECT ticker FROM watchlist ORDER BY ticker DESC")
+
+    print('----------')
+    print('Watchlist:')
+    print('----------')
 
     for row in cur.fetchall():
         print(row[0])
@@ -65,7 +80,10 @@ while True:
             show_rules(db)
         if(entered == 8):
             sys.exit('Trade Log exited')
+        if(entered == 9):
+            show_watchlist(db)
 
+        print('')
         print('good')
         print('You entered ', entered)
     else:
