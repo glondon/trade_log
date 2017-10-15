@@ -46,9 +46,9 @@ def show_rules(db):
     cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
     #print(cur.description)
 
-    print('--------------')
+    print('\n--------------')
     print('Trading Rules:')
-    print('--------------')
+    print('--------------\n')
 
     for row in cur.fetchall():
         print(row[0])
@@ -60,9 +60,9 @@ def show_watchlist(db):
     cur = db.cursor()
     cur.execute("SELECT ticker FROM watchlist ORDER BY ticker DESC")
 
-    print('----------')
+    print('\n----------')
     print('Watchlist:')
-    print('----------')
+    print('----------\n')
 
     watchlist = ''
     result = cur.fetchall()
@@ -85,9 +85,9 @@ def show_trade_plan(db):
     query = "SELECT ticker, notes FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY ticker DESC"
     cur.execute(query)
 
-    print('-----------')
+    print('\n-----------')
     print('Trde ideas:')
-    print('-----------')
+    print('-----------\n')
 
     if cur.rowcount > 0:
         to_show = ''
@@ -102,7 +102,7 @@ def show_trade_plan(db):
 
 menu()
 
-print('--------')
+print('\n--------\n')
 
 while True:
     option = input('Choose option')
