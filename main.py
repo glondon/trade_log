@@ -58,8 +58,11 @@ def show_watchlist(db):
     print('Watchlist:')
     print('----------')
 
+    watchlist = ''
     for row in cur.fetchall():
-        print(row[0])
+        watchlist += str(row[0]) + ', '
+
+    print(watchlist)
 
     cur.close()
 
