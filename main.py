@@ -20,6 +20,10 @@ def menu():
         '10. Show weekly trade ideas'
     ]
 
+    print('\n-----')
+    print('Menu:')
+    print('-----\n')
+
     for item in menu_list:
         print(item)
 
