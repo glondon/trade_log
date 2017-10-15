@@ -39,6 +39,10 @@ def show_rules(db):
     cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
     #print(cur.description)
 
+    print('--------------')
+    print('Trading Rules:')
+    print('--------------')
+
     for row in cur.fetchall():
         print(row[0])
 
