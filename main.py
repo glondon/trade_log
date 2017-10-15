@@ -1,21 +1,23 @@
 import sys
 import os
 import pymysql
+import datetime
 
 db = pymysql.connect( host='localhost', port=3306, user='root', passwd='', db='trade_log' )
 
 def menu():
     #TODO finish adding menu items
     menu_list = [
-        '1. View current trades',
-        '2. Add new trade',
-        '3. Update a trade',
-        '4. Remove a trade',
-        '5. View wins to losses',
-        '6. View menu',
-        '7. Show trading rules',
-        '8. Exit program',
-        '9. Show watchlist'
+        '1.  View current trades',
+        '2.  Add new trade',
+        '3.  Update a trade',
+        '4.  Remove a trade',
+        '5.  View wins to losses',
+        '6.  View menu',
+        '7.  Show trading rules',
+        '8.  Exit program',
+        '9.  Show watchlist',
+        '10. Show weekly trade ideas'
     ]
 
     for item in menu_list:
@@ -29,7 +31,7 @@ def validate_int(value):
             return False
         else:
             break
-    if value < 1 or value > 9:
+    if value < 1 or value > 10:
         return False
     else:
         return value
@@ -72,6 +74,25 @@ def show_watchlist(db):
 
     cur.close()
 
+def show_trade_plan(db):
+    #TODO finish adding weekly trade ideas
+    begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
+    cur = db.cursor()
+    query = "SELECT ticker, notes FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY ticker DESC"
+    cur.execute(query)
+    print('-----------')
+    print('Trde ideas:')
+    print('-----------')
+
+    if cur.rowcount > 0:
+        to_show = ''
+        for row in cur.fetchall():
+            to_show += row[0] + ' - ' + row[1] + '\n'
+
+        print(to_show)
+    else:
+        print('None')
+
 # functions end - start running
 
 menu()
@@ -91,6 +112,8 @@ while True:
             sys.exit('Trade Log exited')
         if(entered == 9):
             show_watchlist(db)
+        if entered == 10:
+            show_trade_plan(db)
 
         print('')
         print('good')
