@@ -59,8 +59,14 @@ def show_watchlist(db):
     print('----------')
 
     watchlist = ''
-    for row in cur.fetchall():
-        watchlist += str(row[0]) + ', '
+    result = cur.fetchall()
+    for i, row in enumerate(result):
+        if i == len(result) - 1:
+            watchlist += row[0]
+        elif i == 10 or i == 20 or i == 30:
+            watchlist += '\n'
+        else:
+            watchlist += row[0] + ', '
 
     print(watchlist)
 
