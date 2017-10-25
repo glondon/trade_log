@@ -105,6 +105,20 @@ def trade_entry(db):
 
     print('Enter the symbol, entry price, and date to get started (comma separated):\n')
 
+    values = input()
+
+    if values != '':
+        result = [item.strip() for item in values.split(',')]
+        if len(result) == 3:
+            #TODO validate these items
+            symbol = result[0]
+            entry_price = result[1]
+            trade_date = result[2]
+        else:
+            print('3 values must be entered')
+    else:
+        print('Nothing entered')
+
 
 # functions end - start running
 
@@ -132,7 +146,7 @@ while True:
             show_trade_plan(db)
 
         print('')
-        print('good')
+        print('Program done executing...')
         print('You entered ', entered)
     else:
         print('Not a vaild option')
