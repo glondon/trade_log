@@ -127,7 +127,7 @@ menu()
 print('\n--------\n')
 
 while True:
-    option = input('Choose option')
+    option = input('Choose option\n')
     entered = validate_int(option)
 
     if(entered != False):
@@ -146,7 +146,7 @@ while True:
             show_trade_plan(db)
 
         print('')
-        print('Program done executing...')
+        print('Function done executing...')
         print('You entered ', entered)
     else:
         print('Not a vaild option')
