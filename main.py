@@ -86,7 +86,7 @@ def show_trade_plan(db):
     cur.execute(query)
 
     print('\n-----------')
-    print('Trde ideas:')
+    print('Trade ideas:')
     print('-----------\n')
 
     if cur.rowcount > 0:
@@ -97,6 +97,14 @@ def show_trade_plan(db):
         print(to_show)
     else:
         print('None')
+
+def trade_entry(db):
+    print('\n-----------')
+    print('Trade Entry:')
+    print('-----------\n')
+
+    print('Enter the symbol, entry price, and date to get started (comma separated):\n')
+
 
 # functions end - start running
 
@@ -109,6 +117,9 @@ while True:
     entered = validate_int(option)
 
     if(entered != False):
+        #TODO find better way to do this
+        if entered == 2:
+            trade_entry(db)
         if entered == 6:
             menu()
         if entered == 7:
