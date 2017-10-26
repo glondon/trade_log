@@ -98,6 +98,13 @@ def show_trade_plan(db):
     else:
         print('None')
 
+def validate_float(value):
+    try:
+        test = float(value)
+        return True
+    except ValueError:
+        return False
+
 def trade_entry(db):
     print('\n-----------')
     print('Trade Entry:')
@@ -110,10 +117,21 @@ def trade_entry(db):
     if values != '':
         result = [item.strip() for item in values.split(',')]
         if len(result) == 3:
-            #TODO validate these items
             symbol = result[0]
             entry_price = result[1]
             trade_date = result[2]
+            #validate values
+            errors = []
+            if len(symbol) > 5 or len(symbol) == 0:
+                errors.append('Symbol cannot be empty or greater than 5')
+            if not validate_float(entry_price):
+                errors.append('Entry price not a valid float value')
+
+            if len(errors) > 0:
+                print('failed')
+            else:
+                print('passed')
+
         else:
             print('3 values must be entered')
     else:
