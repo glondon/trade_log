@@ -127,8 +127,9 @@ def trade_entry(db):
             symbol = result[0]
             entry_price = result[1]
             trade_date = result[2]
-            #validate values
+            
             errors = []
+            
             if len(symbol) > 5 or len(symbol) == 0:
                 errors.append('Symbol cannot be empty or greater than 5')
             if not validate_float(entry_price):
@@ -145,6 +146,7 @@ def trade_entry(db):
                     print(x)
             else:
                 print('passed')
+                #TODO insert values into DB
 
         else:
             print('3 values must be entered')
