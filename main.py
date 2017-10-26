@@ -105,6 +105,13 @@ def validate_float(value):
     except ValueError:
         return False
 
+def validate_date(value):
+    try:
+        datetime.datetime.strptime(value, '%Y-%m-%d')
+        return True
+    except ValueError:
+        return False
+
 def trade_entry(db):
     print('\n-----------')
     print('Trade Entry:')
@@ -126,9 +133,16 @@ def trade_entry(db):
                 errors.append('Symbol cannot be empty or greater than 5')
             if not validate_float(entry_price):
                 errors.append('Entry price not a valid float value')
+            if not validate_date(trade_date):
+                errors.append('Invalid trade date entered')
+
+            #TODO force symbol to uppercase
+            #TODO format entry_price to 2 decimal places
 
             if len(errors) > 0:
                 print('failed')
+                for x in errors:
+                    print(x)
             else:
                 print('passed')
 
