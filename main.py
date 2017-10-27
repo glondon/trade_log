@@ -101,9 +101,17 @@ def show_trade_plan(db):
 def validate_float(value):
     try:
         test = float(value)
-        return True
     except ValueError:
         return False
+
+    if value.find('.') != -1:
+        i, f = value.split('.')
+        if len(f) == 2 or len(f) == 1:
+            return True
+        else:
+            return False
+    else:
+        return True
 
 def validate_date(value):
     try:
