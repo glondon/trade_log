@@ -117,39 +117,49 @@ def trade_entry(db):
     print('Trade Entry:')
     print('-----------\n')
 
-    print('Enter the symbol, entry price, and date to get started (comma separated):\n')
+    print('Enter the symbol, entry price, position, and date to get started \n(comma separated):\n')
 
     values = input()
 
     if values != '':
         result = [item.strip() for item in values.split(',')]
-        if len(result) == 3:
+        if len(result) == 4:
             symbol = result[0]
             entry_price = result[1]
-            trade_date = result[2]
+            position = result[2]
+            trade_date = result[3]
             
             errors = []
-            
+            positions = ['long', 'short']
+            position = position.lower()
+            symbol = symbol.upper()
+
             if len(symbol) > 5 or len(symbol) == 0:
                 errors.append('Symbol cannot be empty or greater than 5')
             if not validate_float(entry_price):
                 errors.append('Entry price not a valid float value')
+            if not position in positions:
+                errors.append('Position can only be long or short')
             if not validate_date(trade_date):
                 errors.append('Invalid trade date entered')
-
-            #TODO force symbol to uppercase
-            #TODO format entry_price to 2 decimal places
 
             if len(errors) > 0:
                 print('failed')
                 for x in errors:
                     print(x)
             else:
-                print('passed')
-                #TODO insert values into DB
+                query = "INSERT INTO trades (symbol, entry, position, entry_date) VALUES (%s, %s, %s, %s)"
+                try:
+                    cur = db.cursor()
+                    cur.execute(query, (symbol, entry_price, position, trade_date))
+                    db.commit()
+                    cur.close()
+                    print('Trade successfully inserted')
+                except ValueError:
+                    print('Problem inserting trade')
 
         else:
-            print('3 values must be entered')
+            print('4 values must be entered')
     else:
         print('Nothing entered')
 
