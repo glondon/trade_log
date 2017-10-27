@@ -86,7 +86,7 @@ def show_trade_plan(db):
     cur.execute(query)
 
     print('\n-----------')
-    print('Trde ideas:')
+    print('Trade ideas:')
     print('-----------\n')
 
     if cur.rowcount > 0:
@@ -98,6 +98,72 @@ def show_trade_plan(db):
     else:
         print('None')
 
+def validate_float(value):
+    try:
+        test = float(value)
+        return True
+    except ValueError:
+        return False
+
+def validate_date(value):
+    try:
+        datetime.datetime.strptime(value, '%Y-%m-%d')
+        return True
+    except ValueError:
+        return False
+
+def trade_entry(db):
+    print('\n-----------')
+    print('Trade Entry:')
+    print('-----------\n')
+
+    print('Enter the symbol, entry price, position, and date to get started \n(comma separated):\n')
+
+    values = input()
+
+    if values != '':
+        result = [item.strip() for item in values.split(',')]
+        if len(result) == 4:
+            symbol = result[0]
+            entry_price = result[1]
+            position = result[2]
+            trade_date = result[3]
+            
+            errors = []
+            positions = ['long', 'short']
+            position = position.lower()
+            symbol = symbol.upper()
+
+            if len(symbol) > 5 or len(symbol) == 0:
+                errors.append('Symbol cannot be empty or greater than 5')
+            if not validate_float(entry_price):
+                errors.append('Entry price not a valid float value')
+            if not position in positions:
+                errors.append('Position can only be long or short')
+            if not validate_date(trade_date):
+                errors.append('Invalid trade date entered')
+
+            if len(errors) > 0:
+                print('failed')
+                for x in errors:
+                    print(x)
+            else:
+                query = "INSERT INTO trades (symbol, entry, position, entry_date) VALUES (%s, %s, %s, %s)"
+                try:
+                    cur = db.cursor()
+                    cur.execute(query, (symbol, entry_price, position, trade_date))
+                    db.commit()
+                    cur.close()
+                    print('Trade successfully inserted')
+                except ValueError:
+                    print('Problem inserting trade')
+
+        else:
+            print('4 values must be entered')
+    else:
+        print('Nothing entered')
+
+
 # functions end - start running
 
 menu()
@@ -105,10 +171,13 @@ menu()
 print('\n--------\n')
 
 while True:
-    option = input('Choose option')
+    option = input('Choose option\n')
     entered = validate_int(option)
 
     if(entered != False):
+        #TODO find better way to do this
+        if entered == 2:
+            trade_entry(db)
         if entered == 6:
             menu()
         if entered == 7:
@@ -121,7 +190,7 @@ while True:
             show_trade_plan(db)
 
         print('')
-        print('good')
+        print('Function done executing...')
         print('You entered ', entered)
     else:
         print('Not a vaild option')
