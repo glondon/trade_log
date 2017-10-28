@@ -192,6 +192,7 @@ def add_idea(db):
             notes = result[1]
 
             symbol = symbol.upper()
+            date = datetime.date.today()
             errors = []
 
             if len(symbol) > 8 or len(symbol) == 0:
@@ -203,7 +204,15 @@ def add_idea(db):
                 for x in errors:
                     print(x)
             else:
-                query = ""
+                query = "INSERT INTO trade_ideas (ticker, notes, idea_date) VALUES (%s, %s, %s)"
+                try:
+                    cur = db.cursor()
+                    cur.execute(query, (symbol, notes, date))
+                    db.commit()
+                    cur.close()
+                    print('Trade idea successfully added')
+                except ValueError:
+                    print('Problem inserting trade idea')
         else:
             print('2 values must be entered for new trade idea')
     else:
