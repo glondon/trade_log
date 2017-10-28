@@ -145,7 +145,7 @@ def trade_entry(db):
             symbol = symbol.upper()
             account = account.lower()
 
-            if len(symbol) > 5 or len(symbol) == 0:
+            if len(symbol) > 8 or len(symbol) == 0:
                 errors.append('Symbol cannot be empty or greater than 5')
             if not validate_float(entry_price):
                 errors.append('Entry price not a valid float value')
