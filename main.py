@@ -125,22 +125,25 @@ def trade_entry(db):
     print('Trade Entry:')
     print('-----------\n')
 
-    print('Enter the symbol, entry price, position, and date to get started \n(comma separated):\n')
+    print('Enter the symbol, entry price, position, date, and account:\n(comma separated):\n')
 
     values = input()
 
     if values != '':
         result = [item.strip() for item in values.split(',')]
-        if len(result) == 4:
+        if len(result) == 5:
             symbol = result[0]
             entry_price = result[1]
             position = result[2]
             trade_date = result[3]
+            account = result[4]
             
             errors = []
             positions = ['long', 'short']
+            accounts = ['tos', 'ibg', 'ibc']
             position = position.lower()
             symbol = symbol.upper()
+            account = account.lower()
 
             if len(symbol) > 5 or len(symbol) == 0:
                 errors.append('Symbol cannot be empty or greater than 5')
@@ -150,16 +153,17 @@ def trade_entry(db):
                 errors.append('Position can only be long or short')
             if not validate_date(trade_date):
                 errors.append('Invalid trade date entered')
+            if not account in accounts:
+                errors.append('Account not valid')
 
             if len(errors) > 0:
-                print('failed')
                 for x in errors:
                     print(x)
             else:
-                query = "INSERT INTO trades (symbol, entry, position, entry_date) VALUES (%s, %s, %s, %s)"
+                query = "INSERT INTO trades (symbol, entry, position, entry_date, account) VALUES (%s, %s, %s, %s, %s)"
                 try:
                     cur = db.cursor()
-                    cur.execute(query, (symbol, entry_price, position, trade_date))
+                    cur.execute(query, (symbol, entry_price, position, trade_date, account))
                     db.commit()
                     cur.close()
                     print('Trade successfully inserted')
@@ -167,7 +171,7 @@ def trade_entry(db):
                     print('Problem inserting trade')
 
         else:
-            print('4 values must be entered')
+            print('5 values must be entered for a new trade')
     else:
         print('Nothing entered')
 
