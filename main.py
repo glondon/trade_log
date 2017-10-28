@@ -17,7 +17,8 @@ def menu():
         '7.  Show trading rules',
         '8.  Exit program',
         '9.  Show watchlist',
-        '10. Show weekly trade ideas'
+        '10. Show weekly trade ideas',
+        '11. Add trade idea'
     ]
 
     print('\n-----')
@@ -35,7 +36,7 @@ def validate_int(value):
             return False
         else:
             break
-    if value < 1 or value > 10:
+    if value < 1 or value > 11:
         return False
     else:
         return value
@@ -175,6 +176,49 @@ def trade_entry(db):
     else:
         print('Nothing entered')
 
+def add_idea(db):
+    print('\n-------------')
+    print('Add Trade Idea:')
+    print('-------------\n')
+
+    print('Enter symbol & notes (comma separated):\n')
+
+    values = input()
+
+    if values != '':
+        result = [item.strip() for item in values.split(',')]
+        if len(result) == 2:
+            symbol = result[0]
+            notes = result[1]
+
+            symbol = symbol.upper()
+            date = datetime.date.today()
+            errors = []
+
+            if len(symbol) > 8 or len(symbol) == 0:
+                errors.append('Symbol cannot be greater than 8 or empty') 
+            if len(notes) > 255 or len(notes) == 0:
+                errors.append('Notes cannot be greater than 255 or empty')
+
+            if len(errors) > 0:
+                for x in errors:
+                    print(x)
+            else:
+                query = "INSERT INTO trade_ideas (ticker, notes, idea_date) VALUES (%s, %s, %s)"
+                try:
+                    cur = db.cursor()
+                    cur.execute(query, (symbol, notes, date))
+                    db.commit()
+                    cur.close()
+                    print('Trade idea successfully added')
+                except ValueError:
+                    print('Problem inserting trade idea')
+        else:
+            print('2 values must be entered for new trade idea')
+    else:
+        print('Nothing entered')
+
+
 
 # functions end - start running
 
@@ -200,6 +244,8 @@ while True:
             show_watchlist(db)
         if entered == 10:
             show_trade_plan(db)
+        if entered == 11:
+            add_idea(db)
 
         print('')
         print('Function done executing...')
