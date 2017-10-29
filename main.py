@@ -90,7 +90,7 @@ class TradeLog:
         values = input()
 
         if values != '':
-            result = [item.strip() for item in values.split(',')]
+            result = self.split_string(values)
             if len(result) == 5:
                 symbol = result[0]
                 entry_price = result[1]
@@ -143,7 +143,7 @@ class TradeLog:
         values = input()
 
         if values != '':
-            result = [item.strip() for item in values.split(',')]
+            result = self.split_string(values)
             if len(result) == 2:
                 symbol = result[0]
                 notes = result[1]
@@ -165,7 +165,7 @@ class TradeLog:
                     try:
                         cur = self.db.cursor()
                         cur.execute(query, (symbol, notes, date))
-                        db.commit()
+                        self.db.commit()
                         cur.close()
                         print('Trade idea successfully added')
                     except ValueError:
@@ -225,10 +225,14 @@ class TradeLog:
         else:
             return value
 
+    @staticmethod
+    def split_string(values):
+        return [item.strip() for item in values.split(',')]
+
+
 # class end - start running
 
 t = TradeLog()
-
 t.menu()
 
 print('\n--------\n')
