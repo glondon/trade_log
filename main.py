@@ -6,6 +6,8 @@ import datetime
 class TradeLog:
 
     db = pymysql.connect(host = 'localhost', port = 3306, user = 'root', passwd = '', db = 'trade_log')
+    positions = ['long', 'short']
+    accounts = ['tos', 'ibg', 'ibc']
 
     #def __init__(self):
     #    print('init')
@@ -99,8 +101,6 @@ class TradeLog:
                 account = result[4]
                 
                 errors = []
-                positions = ['long', 'short']
-                accounts = ['tos', 'ibg', 'ibc']
                 position = position.lower()
                 symbol = symbol.upper()
                 account = account.lower()
@@ -109,11 +109,11 @@ class TradeLog:
                     errors.append('Symbol cannot be empty or greater than 5')
                 if not self.validate_float(entry_price):
                     errors.append('Entry price not a valid float value')
-                if not position in positions:
+                if not position in self.positions:
                     errors.append('Position can only be long or short')
                 if not self.validate_date(trade_date):
                     errors.append('Invalid trade date entered')
-                if not account in accounts:
+                if not account in self.accounts:
                     errors.append('Account not valid')
 
                 if len(errors) > 0:
