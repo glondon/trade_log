@@ -107,11 +107,11 @@ class TradeLog:
 
                 if len(symbol) > 8 or len(symbol) == 0:
                     errors.append('Symbol cannot be empty or greater than 5')
-                if not validate_float(entry_price):
+                if not self.validate_float(entry_price):
                     errors.append('Entry price not a valid float value')
                 if not position in positions:
                     errors.append('Position can only be long or short')
-                if not validate_date(trade_date):
+                if not self.validate_date(trade_date):
                     errors.append('Invalid trade date entered')
                 if not account in accounts:
                     errors.append('Account not valid')
