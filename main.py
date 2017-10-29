@@ -5,10 +5,12 @@ import datetime
 
 class TradeLog:
 
-    def __init__(self):
-        self.db = pymysql.connect( host='localhost', port=3306, user='root', passwd='', db='trade_log' )
+    db = pymysql.connect(host = 'localhost', port = 3306, user = 'root', passwd = '', db = 'trade_log')
 
-    def menu():
+    #def __init__(self):
+    #    print('init')
+
+    def menu(self):
         #TODO finish adding menu items
         menu_list = [
             '1.  View current trades',
@@ -24,7 +26,7 @@ class TradeLog:
             '11. Add trade idea'
         ]
 
-        title('Menu')
+        self.title('Menu')
 
         for item in menu_list:
             print(item)
@@ -34,7 +36,7 @@ class TradeLog:
         cur = self.db.cursor()
         cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
 
-        title('Trading Rules')
+        self.title('Trading Rules')
 
         for row in cur.fetchall():
             print(row[0])
@@ -46,7 +48,7 @@ class TradeLog:
         cur = self.db.cursor()
         cur.execute("SELECT ticker FROM watchlist ORDER BY ticker DESC")
 
-        title('Watchlist')
+        self.title('Watchlist')
 
         watchlist = ''
         result = cur.fetchall()
@@ -69,7 +71,7 @@ class TradeLog:
         query = "SELECT ticker, notes FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY ticker DESC"
         cur.execute(query)
 
-        title('Trade ideas')
+        self.title('Trade ideas')
 
         if cur.rowcount > 0:
             to_show = ''
@@ -81,7 +83,7 @@ class TradeLog:
             print('None')
 
     def trade_entry(self):
-        title('Trade Entry')
+        self.title('Trade Entry')
 
         print('Enter the symbol, entry price, position, date, and account:\n(comma separated):\n')
 
@@ -134,7 +136,7 @@ class TradeLog:
             print('Nothing entered')
 
     def add_idea(self):
-        title('Add Trade Idea')
+        self.title('Add Trade Idea')
 
         print('Enter symbol & notes (comma separated):\n')
 
@@ -173,17 +175,17 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def exit_app():
+    def exit_app(self):
         sys.exit('Trade Log exited')
 
     # utility methods
 
-    def title(string):
+    def title(self, string):
         print('\n-------------')
         print(string + ':')
         print('-------------\n')
 
-    def validate_float(value):
+    def validate_float(self, value):
         try:
             test = float(value)
         except ValueError:
@@ -198,14 +200,14 @@ class TradeLog:
         else:
             return True
 
-    def validate_date(value):
+    def validate_date(self, value):
         try:
             datetime.datetime.strptime(value, '%Y-%m-%d')
             return True
         except ValueError:
             return False
 
-    def validate_int(value):
+    def validate_int(self, value):
         while True:
             try:
                 value = int(value)
