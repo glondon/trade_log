@@ -70,7 +70,7 @@ class TradeLog:
         #TODO finish adding weekly trade ideas
         begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
         cur = self.db.cursor()
-        query = "SELECT ticker, notes FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY ticker DESC"
+        query = "SELECT ticker, notes, idea_date FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY idea_date DESC"
         cur.execute(query)
 
         self.title('Trade ideas')
@@ -78,7 +78,7 @@ class TradeLog:
         if cur.rowcount > 0:
             to_show = ''
             for row in cur.fetchall():
-                to_show += row[0] + ' - ' + row[1] + '\n'
+                to_show += str(row[2]) + ' - ' + row[0] + ' - ' + row[1] + '\n'
 
             print(to_show)
         else:
