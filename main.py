@@ -6,6 +6,8 @@ import datetime
 class TradeLog:
 
     db = pymysql.connect(host = 'localhost', port = 3306, user = 'root', passwd = '', db = 'trade_log')
+    positions = ['long', 'short']
+    accounts = ['tos', 'ibg', 'ibc']
 
     #def __init__(self):
     #    print('init')
@@ -68,7 +70,7 @@ class TradeLog:
         #TODO finish adding weekly trade ideas
         begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
         cur = self.db.cursor()
-        query = "SELECT ticker, notes FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY ticker DESC"
+        query = "SELECT ticker, notes, idea_date FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY idea_date DESC"
         cur.execute(query)
 
         self.title('Trade ideas')
@@ -76,7 +78,7 @@ class TradeLog:
         if cur.rowcount > 0:
             to_show = ''
             for row in cur.fetchall():
-                to_show += row[0] + ' - ' + row[1] + '\n'
+                to_show += str(row[2]) + ' - ' + row[0] + ' - ' + row[1] + '\n'
 
             print(to_show)
         else:
@@ -99,8 +101,6 @@ class TradeLog:
                 account = result[4]
                 
                 errors = []
-                positions = ['long', 'short']
-                accounts = ['tos', 'ibg', 'ibc']
                 position = position.lower()
                 symbol = symbol.upper()
                 account = account.lower()
@@ -109,11 +109,11 @@ class TradeLog:
                     errors.append('Symbol cannot be empty or greater than 5')
                 if not self.validate_float(entry_price):
                     errors.append('Entry price not a valid float value')
-                if not position in positions:
+                if not position in self.positions:
                     errors.append('Position can only be long or short')
                 if not self.validate_date(trade_date):
                     errors.append('Invalid trade date entered')
-                if not account in accounts:
+                if not account in self.accounts:
                     errors.append('Account not valid')
 
                 if len(errors) > 0:
