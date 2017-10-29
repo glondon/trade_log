@@ -21,9 +21,7 @@ def menu():
         '11. Add trade idea'
     ]
 
-    print('\n-----')
-    print('Menu:')
-    print('-----\n')
+    title('Menu')
 
     for item in menu_list:
         print(item)
@@ -45,11 +43,8 @@ def show_rules(db):
     #TODO finish adding trading rules
     cur = db.cursor()
     cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
-    #print(cur.description)
 
-    print('\n--------------')
-    print('Trading Rules:')
-    print('--------------\n')
+    title('Trading Rules')
 
     for row in cur.fetchall():
         print(row[0])
@@ -61,9 +56,7 @@ def show_watchlist(db):
     cur = db.cursor()
     cur.execute("SELECT ticker FROM watchlist ORDER BY ticker DESC")
 
-    print('\n----------')
-    print('Watchlist:')
-    print('----------\n')
+    title('Watchlist')
 
     watchlist = ''
     result = cur.fetchall()
@@ -86,9 +79,7 @@ def show_trade_plan(db):
     query = "SELECT ticker, notes FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY ticker DESC"
     cur.execute(query)
 
-    print('\n-----------')
-    print('Trade ideas:')
-    print('-----------\n')
+    title('Trade ideas')
 
     if cur.rowcount > 0:
         to_show = ''
@@ -122,9 +113,7 @@ def validate_date(value):
         return False
 
 def trade_entry(db):
-    print('\n-----------')
-    print('Trade Entry:')
-    print('-----------\n')
+    title('Trade Entry')
 
     print('Enter the symbol, entry price, position, date, and account:\n(comma separated):\n')
 
@@ -177,9 +166,7 @@ def trade_entry(db):
         print('Nothing entered')
 
 def add_idea(db):
-    print('\n-------------')
-    print('Add Trade Idea:')
-    print('-------------\n')
+    title('Add Trade Idea')
 
     print('Enter symbol & notes (comma separated):\n')
 
@@ -221,7 +208,10 @@ def add_idea(db):
 def exit_app():
     sys.exit('Trade Log exited')
 
-
+def title(string):
+    print('\n-------------')
+    print(string + ':')
+    print('-------------\n')
 
 # functions end - start running
 
