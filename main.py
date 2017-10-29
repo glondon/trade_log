@@ -218,6 +218,9 @@ def add_idea(db):
     else:
         print('Nothing entered')
 
+def exit_app():
+    sys.exit('Trade Log exited')
+
 
 
 # functions end - start running
@@ -226,30 +229,31 @@ menu()
 
 print('\n--------\n')
 
+options = {
+    2 : trade_entry,
+    6 : menu,
+    7 : show_rules,
+    8 : exit_app,
+    9 : show_watchlist,
+    10 : show_trade_plan,
+    11 : add_idea
+}
+
 while True:
     option = input('Choose option\n')
     entered = validate_int(option)
 
     if(entered != False):
-        #TODO find better way to do this
-        if entered == 2:
-            trade_entry(db)
-        if entered == 6:
-            menu()
-        if entered == 7:
-            show_rules(db)
-        if entered == 8:
-            sys.exit('Trade Log exited')
-        if entered == 9:
-            show_watchlist(db)
-        if entered == 10:
-            show_trade_plan(db)
-        if entered == 11:
-            add_idea(db)
+        if entered in options:
+            no_db = [6, 8]
+            if entered in no_db:
+                options[entered]()
+            else:
+                options[entered](db)
+        else:
+            print('Not a valid option')
 
-        print('')
-        print('Function done executing...')
-        print('You entered ', entered)
+        print('\nYou entered ', entered)
     else:
         print('Not a vaild option')
 
