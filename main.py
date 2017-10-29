@@ -175,17 +175,20 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def exit_app(self):
+    @staticmethod
+    def exit_app():
         sys.exit('Trade Log exited')
 
     # utility methods
 
-    def title(self, string):
+    @staticmethod
+    def title(string):
         print('\n-------------')
         print(string + ':')
         print('-------------\n')
 
-    def validate_float(self, value):
+    @staticmethod
+    def validate_float(value):
         try:
             test = float(value)
         except ValueError:
@@ -200,14 +203,16 @@ class TradeLog:
         else:
             return True
 
-    def validate_date(self, value):
+    @staticmethod
+    def validate_date(value):
         try:
             datetime.datetime.strptime(value, '%Y-%m-%d')
             return True
         except ValueError:
             return False
 
-    def validate_int(self, value):
+    @staticmethod
+    def validate_int(value):
         while True:
             try:
                 value = int(value)
