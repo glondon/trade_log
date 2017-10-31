@@ -180,9 +180,22 @@ class TradeLog:
 
         self.title('View Trades')
         month_begin = datetime.date.today().replace(day = 1)
-        print(month_begin)
+        
         #initial query
-        query = "SELECT * FROM trades WHERE entry_date >= " + str(month_begin) + " ORDER BY entry_date DESC"
+        query = "SELECT * FROM trades WHERE entry_date >= '" + str(month_begin) + "' ORDER BY entry_date DESC"
+
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                #TODO improve this
+                view = ''
+                for row in cur.fetchall():
+                    print('id:', row[0])
+            else:
+                print('No trades found')
+        except ValueError:
+            print('Problem retrieving trades')
 
     @staticmethod
     def exit_app():
