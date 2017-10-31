@@ -15,7 +15,7 @@ class TradeLog:
     def menu(self):
         #TODO finish adding menu items
         menu_list = [
-            '1.  View current trades',
+            '1.  View trades',
             '2.  Add new trade',
             '3.  Update a trade',
             '4.  Remove a trade',
@@ -175,6 +175,15 @@ class TradeLog:
         else:
             print('Nothing entered')
 
+    def view_trades(self):
+        #start with showing all trades - later add open,closed, wins, losses, etc..
+
+        self.title('View Trades')
+        month_begin = datetime.date.today().replace(day = 1)
+        print(month_begin)
+        #initial query
+        query = "SELECT * FROM trades WHERE entry_date >= " + str(month_begin) + " ORDER BY entry_date DESC"
+
     @staticmethod
     def exit_app():
         sys.exit('Trade Log exited')
@@ -238,6 +247,7 @@ t.menu()
 print('\n--------\n')
 
 options = {
+    1 : t.view_trades,
     2 : t.trade_entry,
     6 : t.menu,
     7 : t.show_rules,
