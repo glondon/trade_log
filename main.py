@@ -193,9 +193,11 @@ class TradeLog:
                 row2 = ''
                 row3 = ''
                 for row in cur.fetchall():
-                    row1 += 'ID: ' + str(row[0]) + ' SYMBOL: ' + row[1] + ' ENTRY: ' + str(row[2]) + '\n'
+                    #print('{0:2d} {0:8} {0:2f}'.format(row[0], row[1], row[2]))
+                    #row1 += 'ID: ' + str(row[0]) + ' SYMBOL: ' + row[1] + ' ENTRY: ' + str(row[2]) + '\n'
 
-                print(row1)
+                #print(row1)
+                
             else:
                 print('No trades found')
         except ValueError:
