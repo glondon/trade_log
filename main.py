@@ -189,15 +189,9 @@ class TradeLog:
             cur.execute(query)
             if cur.rowcount > 0:
                 #TODO improve this
-                row1 = ''
-                row2 = ''
-                row3 = ''
+                print('{0:2} {1:8} {2:2}'.format('ID', 'SYMBOL', 'ENTRY'))
                 for row in cur.fetchall():
-                    #print('{0:2d} {0:8} {0:2f}'.format(row[0], row[1], row[2]))
-                    #row1 += 'ID: ' + str(row[0]) + ' SYMBOL: ' + row[1] + ' ENTRY: ' + str(row[2]) + '\n'
-
-                #print(row1)
-                
+                    print('{0:2d} {1:8} {2:2f}'.format(row[0], row[1], row[2]))                
             else:
                 print('No trades found')
         except ValueError:
