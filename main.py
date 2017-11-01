@@ -2,6 +2,7 @@ import sys
 import os
 import pymysql
 import datetime
+from pprint import pprint
 
 class TradeLog:
 
@@ -188,12 +189,21 @@ class TradeLog:
             cur = self.db.cursor()
             cur.execute(query)
             if cur.rowcount > 0:
-                #TODO improve this
-                print('{0:2} {1:6} {2:10} {3:9} {4:5} {5:6} {6:5} {7:8} {8:8}'
-                    .format('ID', 'SYMBOL', 'ENTRY', 'EXIT', 'POS', 'STOP', 'TARGET', 'EN:DATE', 'EX:DATE'))
+                #TODO improve this - show values based on open or closed
+                #print('{0:2} {1:6} {2:10} {3:9} {4:5} {5:6} {6:5} {7:8} {8:8}'
+                #    .format('ID', 'SYMBOL', 'ENTRY', 'EXIT', 'POS', 'STOP', 'TARGET', 'EN:DATE', 'EX:DATE'))
+                d = {}
                 for row in cur.fetchall():
-                    print('{0:2d} {1:6} {2:8f} {3:8f} {4:5} {5:8f} {6:8f} {7:10} {8:10}'
-                        .format(row[0], row[1], row[2], row[3], row[4], row[5], row[6], str(row[7]), str(row[8])))                
+                    d.setdefault('ID', []).append(row[0])
+                    d.setdefault('SYMBOL', []).append(row[1])
+                    d.setdefault('ENTRY', []).append(str(row[2]))
+
+                #    print('{0:2d} {1:6} {2:8f} {3:8f} {4:5} {5:8f} {6:8f} {7:10} {8:10}'
+                #        .format(row[0], row[1], row[2], row[3], row[4], row[5], row[6], str(row[7]), str(row[8])))     
+
+                #pprint(d)
+                for k, v in d.items():
+                    print(k, v)           
             else:
                 print('No trades found')
         except ValueError:
