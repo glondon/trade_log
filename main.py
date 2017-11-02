@@ -190,7 +190,7 @@ class TradeLog:
             cur = self.db.cursor()
             cur.execute(query)
             if cur.rowcount > 0:
-                print('{0:3} {1:6} {2:3} {3:>8} {4:>6} {5:>5} {6:>8} {7:>8}'
+                print('{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8}'
                     .format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS'))
                 total = 0
                 total_comm = 0
@@ -198,7 +198,7 @@ class TradeLog:
                     total += row[7]
                     total_comm += row[5] + row[6]
                     comm = row[5] + row[6]
-                    print('{0:1d} {1:>4} {2:>8} {3:>8} {4:5} {5:>1f} {6:>5f} {7:>8}'
+                    print('{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'
                         .format(row[0], row[1], row[2], str(row[3]), row[4], comm, row[7], row[8]))    
 
                 print('\nTotal proft/loss: ' + str(total))
