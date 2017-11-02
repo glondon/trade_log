@@ -183,13 +183,15 @@ class TradeLog:
         month_begin = datetime.date.today().replace(day = 1)
         
         #initial query
-        query = "SELECT * FROM trades WHERE entry_date >= '" + str(month_begin) + "' ORDER BY entry_date DESC"
+        query = "SELECT id, symbol, position, entry_date, account, entry_comm, exit_comm, result, trade_reasons, notes, status "
+        query += "FROM trades WHERE entry_date >= '" + str(month_begin) + "' ORDER BY entry_date DESC"
 
         try:
             cur = self.db.cursor()
             cur.execute(query)
             if cur.rowcount > 0:
                 #TODO improve this - show values based on open or closed
+                #TODO only grab basic items, added up commission, show result
                 #print('{0:2} {1:6} {2:10} {3:9} {4:5} {5:6} {6:5} {7:8} {8:8}'
                 #    .format('ID', 'SYMBOL', 'ENTRY', 'EXIT', 'POS', 'STOP', 'TARGET', 'EN:DATE', 'EX:DATE'))
                 d = {}
