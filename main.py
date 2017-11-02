@@ -2,6 +2,7 @@ import sys
 import os
 import pymysql
 import datetime
+from pprint import pprint
 
 class TradeLog:
 
@@ -15,7 +16,7 @@ class TradeLog:
     def menu(self):
         #TODO finish adding menu items
         menu_list = [
-            '1.  View current trades',
+            '1.  View trades',
             '2.  Add new trade',
             '3.  Update a trade',
             '4.  Remove a trade',
@@ -175,6 +176,40 @@ class TradeLog:
         else:
             print('Nothing entered')
 
+    def view_trades(self):
+        #start with showing all trades - later add open,closed, wins, losses, etc..
+
+        self.title('View Trades')
+        month_begin = datetime.date.today().replace(day = 1)
+        
+        #initial query
+        query = "SELECT id, symbol, position, entry_date, account, entry_comm, exit_comm, result, status "
+        query += "FROM trades WHERE entry_date >= '" + str(month_begin) + "' ORDER BY entry_date DESC"
+
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                print('{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8}'
+                    .format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS'))
+                total = 0
+                total_comm = 0
+                for row in cur.fetchall():
+                    total += row[7]
+                    total_comm += row[5] + row[6]
+                    comm = row[5] + row[6]
+                    print('{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'
+                        .format(row[0], row[1], row[2], str(row[3]), row[4], comm, row[7], row[8]))    
+
+                after_comm = total - total_comm
+                print('\nTotal proft/loss: $' + str(total))
+                print('Total commissions: $' + str(total_comm))     
+                print('Total final results: $' + str(after_comm))   
+            else:
+                print('No trades found')
+        except ValueError as e:
+            print('Problem retrieving trades\n' + e)
+
     @staticmethod
     def exit_app():
         sys.exit('Trade Log exited')
@@ -238,6 +273,7 @@ t.menu()
 print('\n--------\n')
 
 options = {
+    1 : t.view_trades,
     2 : t.trade_entry,
     6 : t.menu,
     7 : t.show_rules,
