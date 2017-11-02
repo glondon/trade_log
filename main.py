@@ -183,33 +183,30 @@ class TradeLog:
         month_begin = datetime.date.today().replace(day = 1)
         
         #initial query
-        query = "SELECT id, symbol, position, entry_date, account, entry_comm, exit_comm, result, trade_reasons, notes, status "
+        query = "SELECT id, symbol, position, entry_date, account, entry_comm, exit_comm, result, status "
         query += "FROM trades WHERE entry_date >= '" + str(month_begin) + "' ORDER BY entry_date DESC"
 
         try:
             cur = self.db.cursor()
             cur.execute(query)
             if cur.rowcount > 0:
-                #TODO improve this - show values based on open or closed
-                #TODO only grab basic items, added up commission, show result
-                #print('{0:2} {1:6} {2:10} {3:9} {4:5} {5:6} {6:5} {7:8} {8:8}'
-                #    .format('ID', 'SYMBOL', 'ENTRY', 'EXIT', 'POS', 'STOP', 'TARGET', 'EN:DATE', 'EX:DATE'))
-                d = {}
+                print('{0:3} {1:6} {2:3} {3:>8} {4:>6} {5:>5} {6:>8} {7:>8}'
+                    .format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS'))
+                total = 0
+                total_comm = 0
                 for row in cur.fetchall():
-                    d.setdefault('ID', []).append(row[0])
-                    d.setdefault('SYMBOL', []).append(row[1])
-                    d.setdefault('ENTRY', []).append(str(row[2]))
+                    total += row[7]
+                    total_comm += row[5] + row[6]
+                    comm = row[5] + row[6]
+                    print('{0:1d} {1:>4} {2:>8} {3:>8} {4:5} {5:>1f} {6:>5f} {7:>8}'
+                        .format(row[0], row[1], row[2], str(row[3]), row[4], comm, row[7], row[8]))    
 
-                #    print('{0:2d} {1:6} {2:8f} {3:8f} {4:5} {5:8f} {6:8f} {7:10} {8:10}'
-                #        .format(row[0], row[1], row[2], row[3], row[4], row[5], row[6], str(row[7]), str(row[8])))     
-
-                #pprint(d)
-                for k, v in d.items():
-                    print(k, v)           
+                print('\nTotal proft/loss: ' + str(total))
+                print('Total commissions: ' + str(total_comm))        
             else:
                 print('No trades found')
-        except ValueError:
-            print('Problem retrieving trades')
+        except ValueError as e:
+            print('Problem retrieving trades\n' + e)
 
     @staticmethod
     def exit_app():
