@@ -16,7 +16,7 @@ class TradeLog:
     def menu(self):
         #TODO finish adding menu items
         menu_list = [
-            '1.  View trades',
+            '1.  View trades - current month',
             '2.  Add new trade',
             '3.  Update a trade',
             '4.  Remove a trade',
@@ -26,7 +26,8 @@ class TradeLog:
             '8.  Exit program',
             '9.  Show watchlist',
             '10. Show weekly trade ideas',
-            '11. Add trade idea'
+            '11. Add trade idea',
+            '12. View trades - certain date'
         ]
 
         self.title('Menu')
@@ -176,15 +177,19 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def view_trades(self):
-        #start with showing all trades - later add open,closed, wins, losses, etc..
+    def view_trades(self, month = False):
+
+        if month == False:
+            today = datetime.datetime.today()
+            month = today.month
 
         self.title('View Trades')
-        month_begin = datetime.date.today().replace(day = 1)
+        print('Month Start: ' + self.get_month(month) + '\n')
         
-        #initial query
+        begin = datetime.date.today().replace(month = month, day = 1)
+        
         query = "SELECT id, symbol, position, entry_date, account, entry_comm, exit_comm, result, status "
-        query += "FROM trades WHERE entry_date >= '" + str(month_begin) + "' ORDER BY entry_date DESC"
+        query += "FROM trades WHERE entry_date >= '" + str(begin) + "' ORDER BY entry_date DESC"
 
         try:
             cur = self.db.cursor()
@@ -209,6 +214,20 @@ class TradeLog:
                 print('No trades found')
         except ValueError as e:
             print('Problem retrieving trades\n' + e)
+
+    def view_trades_date(self):
+        print('Enter a starting month (1-12):\n')
+
+        month = input()
+
+        if self.validate_int(month):
+            month = int(month)
+            if month < 1 or month > 12:
+                print('Invalid month entered')
+            else:
+                self.view_trades(month)
+        else:
+            print('Invalid date entered')
 
     @staticmethod
     def exit_app():
@@ -255,7 +274,7 @@ class TradeLog:
                 return False
             else:
                 break
-        if value < 1 or value > 11:
+        if value < 1 or value > 12:
             return False
         else:
             return value
@@ -263,6 +282,28 @@ class TradeLog:
     @staticmethod
     def split_string(values):
         return [item.strip() for item in values.split(',')]
+
+    @staticmethod
+    def get_month(month):
+        months = {
+            1 : 'January',
+            2 : 'February',
+            3 : 'March',
+            4 : 'April',
+            5 : 'May',
+            6 : 'June',
+            7 : 'July',
+            8 : 'August',
+            9 : 'September',
+            10 : 'October',
+            11 : 'November',
+            12 : 'December'
+        }
+
+        if month in months:
+            return months[month]
+        else:
+            return 'Invalid Month'
 
 
 # class end - start running
@@ -280,7 +321,8 @@ options = {
     8 : t.exit_app,
     9 : t.show_watchlist,
     10 : t.show_trade_plan,
-    11 : t.add_idea
+    11 : t.add_idea,
+    12 : t.view_trades_date
 }
 
 while True:
