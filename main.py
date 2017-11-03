@@ -177,15 +177,18 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def view_trades(self):
-        #start with showing all trades - later add open,closed, wins, losses, etc..
+    def view_trades(self, month = False):
 
         self.title('View Trades')
-        month_begin = datetime.date.today().replace(day = 1)
+
+        if month == False:
+            today = datetime.datetime.today()
+            month = today.month
         
-        #initial query
+        begin = datetime.date.today().replace(month = month, day = 1)
+        
         query = "SELECT id, symbol, position, entry_date, account, entry_comm, exit_comm, result, status "
-        query += "FROM trades WHERE entry_date >= '" + str(month_begin) + "' ORDER BY entry_date DESC"
+        query += "FROM trades WHERE entry_date >= '" + str(begin) + "' ORDER BY entry_date DESC"
 
         try:
             cur = self.db.cursor()
@@ -212,7 +215,18 @@ class TradeLog:
             print('Problem retrieving trades\n' + e)
 
     def view_trades_date(self):
-        print('Enter a starting date:\n')
+        print('Enter a starting month (1-12):\n')
+
+        month = input()
+
+        if self.validate_int(month):
+            month = int(month)
+            if month < 1 or month > 12:
+                print('Invalid month entered')
+            else:
+                self.view_trades(month)
+        else:
+            print('Invalid date entered')
 
     @staticmethod
     def exit_app():
