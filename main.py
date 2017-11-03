@@ -16,7 +16,7 @@ class TradeLog:
     def menu(self):
         #TODO finish adding menu items
         menu_list = [
-            '1.  View trades',
+            '1.  View trades - current month',
             '2.  Add new trade',
             '3.  Update a trade',
             '4.  Remove a trade',
@@ -26,7 +26,8 @@ class TradeLog:
             '8.  Exit program',
             '9.  Show watchlist',
             '10. Show weekly trade ideas',
-            '11. Add trade idea'
+            '11. Add trade idea',
+            '12. View trades - certain date'
         ]
 
         self.title('Menu')
@@ -210,6 +211,9 @@ class TradeLog:
         except ValueError as e:
             print('Problem retrieving trades\n' + e)
 
+    def view_trades_date(self):
+        print('Enter a starting date:\n')
+
     @staticmethod
     def exit_app():
         sys.exit('Trade Log exited')
@@ -255,7 +259,7 @@ class TradeLog:
                 return False
             else:
                 break
-        if value < 1 or value > 11:
+        if value < 1 or value > 12:
             return False
         else:
             return value
@@ -280,7 +284,8 @@ options = {
     8 : t.exit_app,
     9 : t.show_watchlist,
     10 : t.show_trade_plan,
-    11 : t.add_idea
+    11 : t.add_idea,
+    12 : t.view_trades_date
 }
 
 while True:
