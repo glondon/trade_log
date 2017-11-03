@@ -179,11 +179,12 @@ class TradeLog:
 
     def view_trades(self, month = False):
 
-        self.title('View Trades')
-
         if month == False:
             today = datetime.datetime.today()
             month = today.month
+
+        self.title('View Trades')
+        print('Month Start: ' + self.get_month(month) + '\n')
         
         begin = datetime.date.today().replace(month = month, day = 1)
         
@@ -281,6 +282,28 @@ class TradeLog:
     @staticmethod
     def split_string(values):
         return [item.strip() for item in values.split(',')]
+
+    @staticmethod
+    def get_month(month):
+        months = {
+            1 : 'January',
+            2 : 'February',
+            3 : 'March',
+            4 : 'April',
+            5 : 'May',
+            6 : 'June',
+            7 : 'July',
+            8 : 'August',
+            9 : 'September',
+            10 : 'October',
+            11 : 'November',
+            12 : 'December'
+        }
+
+        if month in months:
+            return months[month]
+        else:
+            return 'Invalid Month'
 
 
 # class end - start running
