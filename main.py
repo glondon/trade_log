@@ -44,6 +44,7 @@ class TradeLog:
 
         for row in cur.fetchall():
             print(row[0])
+            print('-------------------------------------------------')
 
         cur.close()
 
