@@ -208,9 +208,9 @@ class TradeLog:
                         .format(row[0], row[1], row[2], str(row[3]), row[4], comm, row[7], row[8]))    
 
                 after_comm = total - total_comm
-                print('\nTotal proft/loss: $' + str(total))
-                print('Total commissions: $' + str(total_comm))     
-                print('Total final results: $' + str(after_comm))   
+                print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
+                print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
+                print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
             else:
                 print('No trades found')
         except ValueError as e:
