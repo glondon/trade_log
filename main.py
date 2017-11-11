@@ -51,7 +51,7 @@ class TradeLog:
     def show_watchlist(self):
         #TODO finish adding watchlist items
         cur = self.db.cursor()
-        cur.execute("SELECT ticker FROM watchlist ORDER BY ticker DESC")
+        cur.execute("SELECT ticker FROM watchlist ORDER BY ticker")
 
         self.title('Watchlist')
 
@@ -60,7 +60,7 @@ class TradeLog:
         for i, row in enumerate(result):
             if i == len(result) - 1:
                 watchlist += row[0]
-            elif i == 10 or i == 20 or i == 30:
+            elif i == 10 or i == 21 or i == 32:
                 watchlist += '\n'
             else:
                 watchlist += row[0] + ', '
