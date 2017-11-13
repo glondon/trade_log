@@ -201,15 +201,18 @@ class TradeLog:
                 total_comm = 0
                 positions = []
                 exits = []
+                total_trades = 0
                 for row in cur.fetchall():
                     total += row[13]
                     total_comm += row[11] + row[12]
                     comm = row[11] + row[12]
                     positions.append(row[4])
                     exits.append(row[14])
+                    total_trades += 1
                     print('{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'
                         .format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17]))    
 
+                cur.close()
                 after_comm = total - total_comm
                 pos_sum = self.sum_positions(positions)
                 exit_early = self.sum_exit_early(exits)
@@ -217,7 +220,8 @@ class TradeLog:
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
 
-                print('\nTotal long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
+                print('\nTotal trades: ' + str(total_trades))
+                print('Total long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
                 print('Trades exited early: ' + str(exit_early[0]) + ' Good exits: ' + str(exit_early[1]))
             else:
                 print('No trades found')
