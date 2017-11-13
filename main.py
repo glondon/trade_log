@@ -203,6 +203,7 @@ class TradeLog:
                 exits = []
                 total_trades = 0
                 results = []
+                statuses = []
                 for row in cur.fetchall():
                     total += row[13]
                     total_comm += row[11] + row[12]
@@ -211,6 +212,7 @@ class TradeLog:
                     exits.append(row[14])
                     total_trades += 1
                     results.append(row[13])
+                    statuses.append(row[17])
                     print('{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'
                         .format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17]))    
 
@@ -219,6 +221,7 @@ class TradeLog:
                 pos_sum = self.sum_positions(positions)
                 exit_early = self.sum_exit_early(exits)
                 win_rate = self.win_rate(results)
+                status_sum = self.sum_statuses(statuses)
                 print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
@@ -227,6 +230,7 @@ class TradeLog:
                 print('Total long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
                 print('Trades exited early: ' + str(exit_early[0]) + ' Good exits: ' + str(exit_early[1]))
                 print('Wins: ' + str(win_rate[0]) + ' Losses: ' + str(win_rate[1]) + ' Win Rate: ' + str(round(win_rate[2], 2)) + '%')
+                print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
             else:
                 print('No trades found')
         except ValueError as e:
@@ -245,6 +249,18 @@ class TradeLog:
                 self.view_trades(month)
         else:
             print('Invalid date entered')
+
+    @staticmethod
+    def sum_statuses(values):
+        open = 0
+        closed = 0
+        for x in values:
+            if x == 'open':
+                open += 1
+            else:
+                closed += 1
+
+        return [open, closed]
 
     @staticmethod
     def win_rate(values):
