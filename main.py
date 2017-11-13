@@ -229,7 +229,8 @@ class TradeLog:
                 print('\nTotal trades: ' + str(total_trades))
                 print('Total long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
                 print('Trades exited early: ' + str(exit_early[0]) + ' Good exits: ' + str(exit_early[1]))
-                print('Wins: ' + str(win_rate[0]) + ' Losses: ' + str(win_rate[1]) + ' Win Rate: ' + str(round(win_rate[2], 2)) + '%')
+                print('Wins: ' + str(win_rate[0]) + ' Losses: ' + str(win_rate[1]) + ' Win Rate: ' + str(round(win_rate[2], 2)) 
+                    + '%' + ' Average: $' + str(round(win_rate[3], 2)))
                 print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
             else:
                 print('No trades found')
@@ -267,16 +268,19 @@ class TradeLog:
         wins = 0
         losses = 0
         counter = 0
+        sum = 0
         for x in values:
             counter += 1
+            sum += x
             if x < 0:
                 losses += 1
             else:
                 wins += 1
 
         win_rate = wins / counter * 100
+        avg = sum / counter
 
-        return [wins, losses, win_rate]
+        return [wins, losses, win_rate, avg]
 
     @staticmethod
     def sum_exit_early(values):
