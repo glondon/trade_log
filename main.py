@@ -200,20 +200,25 @@ class TradeLog:
                 total = 0
                 total_comm = 0
                 positions = []
+                exits = []
                 for row in cur.fetchall():
                     total += row[13]
                     total_comm += row[11] + row[12]
                     comm = row[11] + row[12]
                     positions.append(row[4])
+                    exits.append(row[14])
                     print('{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'
                         .format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17]))    
 
                 after_comm = total - total_comm
                 pos_sum = self.sum_positions(positions)
+                exit_early = self.sum_exit_early(exits)
                 print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
+
                 print('\nTotal long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
+                print('Trades exited early: ' + str(exit_early[0]) + ' Good exits: ' + str(exit_early[1]))
             else:
                 print('No trades found')
         except ValueError as e:
@@ -232,6 +237,18 @@ class TradeLog:
                 self.view_trades(month)
         else:
             print('Invalid date entered')
+
+    @staticmethod
+    def sum_exit_early(values):
+        times = 0
+        not_times = 0
+        for x in values:
+            if x == 1:
+                times += 1
+            else:
+                not_times += 1
+
+        return [times, not_times]
 
     @staticmethod
     def sum_positions(values):
