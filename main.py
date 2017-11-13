@@ -199,17 +199,21 @@ class TradeLog:
                     .format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS'))
                 total = 0
                 total_comm = 0
+                positions = []
                 for row in cur.fetchall():
                     total += row[13]
                     total_comm += row[11] + row[12]
                     comm = row[11] + row[12]
+                    positions.append(row[4])
                     print('{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'
                         .format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17]))    
 
                 after_comm = total - total_comm
+                pos_sum = self.sum_positions(positions)
                 print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
+                print('\nTotal long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
             else:
                 print('No trades found')
         except ValueError as e:
@@ -228,6 +232,18 @@ class TradeLog:
                 self.view_trades(month)
         else:
             print('Invalid date entered')
+
+    @staticmethod
+    def sum_positions(values):
+        lng = 0
+        sht = 0
+        for x in values:
+            if x == 'long':
+                lng += 1
+            else:
+                sht += 1
+
+        return [lng, sht]
 
     @staticmethod
     def exit_app():
