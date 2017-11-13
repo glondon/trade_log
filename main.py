@@ -189,8 +189,7 @@ class TradeLog:
         
         begin = datetime.date.today().replace(month = month, day = 1)
         
-        query = "SELECT id, symbol, position, entry_date, account, entry_comm, exit_comm, result, status "
-        query += "FROM trades WHERE entry_date >= '" + str(begin) + "' ORDER BY entry_date DESC"
+        query = "SELECT * FROM trades WHERE entry_date >= '" + str(begin) + "' ORDER BY entry_date DESC"
 
         try:
             cur = self.db.cursor()
