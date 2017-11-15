@@ -270,12 +270,13 @@ class TradeLog:
         counter = 0
         sum = 0
         for x in values:
-            counter += 1
             sum += x
             if x < 0:
                 losses += 1
-            else:
+                counter += 1
+            elif x > 0:
                 wins += 1
+                counter += 1
 
         win_rate = wins / counter * 100
         avg = sum / counter
