@@ -264,9 +264,9 @@ class TradeLog:
         for x in values:
             if x == 'tos':
                 tos += 1
-            if x == 'ibg':
+            elif x == 'ibg':
                 ibg += 1
-            if x == 'ibc':
+            else:
                 ibc += 1
 
         return [tos, ibg, ibc]
