@@ -178,13 +178,15 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def view_trades(self, month = False):
+    def view_trades(self, month = False, o = False):
 
         if month == False:
             today = datetime.datetime.today()
             month = today.month
 
-        self.title('View Trades')
+        title = 'Viewing all trades' if o == False else 'Viewing open trades'
+
+        self.title(title)
         print('Month Start: ' + self.get_month(month) + '\n')
         
         begin = datetime.date.today().replace(month = month, day = 1)
@@ -258,7 +260,8 @@ class TradeLog:
             print('Invalid date entered')
 
     def view_open(self):
-        print('Viewing open trades\n')
+        #view since beginning of current year
+        self.view_trades(1, 'open')
 
     @staticmethod
     def sum_accounts(values):
