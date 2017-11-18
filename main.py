@@ -20,7 +20,7 @@ class TradeLog:
             '2.  Add new trade',
             '3.  Update a trade',
             '4.  Remove a trade',
-            '5.  View wins to losses',
+            '5.  View all open trades',
             '6.  View menu',
             '7.  Show trading rules',
             '8.  Exit program',
@@ -257,6 +257,9 @@ class TradeLog:
         else:
             print('Invalid date entered')
 
+    def view_open(self):
+        print('Viewing open trades\n')
+
     @staticmethod
     def sum_accounts(values):
         tos = 0
@@ -418,6 +421,7 @@ print('\n--------\n')
 options = {
     1 : t.view_trades,
     2 : t.trade_entry,
+    5 : t.view_open,
     6 : t.menu,
     7 : t.show_rules,
     8 : t.exit_app,
