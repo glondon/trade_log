@@ -209,7 +209,7 @@ class TradeLog:
                 total = 0
                 total_comm = 0
                 positions = []
-                exits = {}
+                exits = []
                 total_trades = 0
                 results = []
                 statuses = []
@@ -219,8 +219,7 @@ class TradeLog:
                     total_comm += row[11] + row[12]
                     comm = row[11] + row[12]
                     positions.append(row[4])
-                    exits['exit'] = row[14]
-                    exits['status'] = row[17]
+                    exits.append({'exit': row[14], 'status': row[17]})
                     total_trades += 1
                     results.append(row[13])
                     statuses.append(row[17])
@@ -232,7 +231,6 @@ class TradeLog:
                 after_comm = total - total_comm
                 pos_sum = self.sum_positions(positions)
                 exit_early = self.sum_exit_early(exits)
-                pprint(exits)
                 win_rate = self.win_rate(results)
                 status_sum = self.sum_statuses(statuses)
                 acc_sum = self.sum_accounts(accounts)
@@ -333,10 +331,10 @@ class TradeLog:
     def sum_exit_early(values):
         times = 0
         not_times = 0
-        for k in values.keys():
-            if values['exit'] == 1 and values['status'] == 'closed':
+        for x in values:
+            if x.get('exit') == 1 and x.get('status') == 'closed':
                 times += 1
-            elif values['exit'] == 0 and values['status'] == 'closed':
+            elif x.get('exit') == 0 and x.get('status') == 'closed':
                 not_times += 1
 
         return [times, not_times]
