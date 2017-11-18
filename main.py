@@ -20,7 +20,7 @@ class TradeLog:
             '2.  Add new trade',
             '3.  Update a trade',
             '4.  Remove a trade',
-            '5.  View wins to losses',
+            '5.  View all open trades',
             '6.  View menu',
             '7.  Show trading rules',
             '8.  Exit program',
@@ -178,18 +178,27 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def view_trades(self, month = False):
+    def view_trades(self, month = False, o = False):
 
         if month == False:
             today = datetime.datetime.today()
             month = today.month
 
-        self.title('View Trades')
+        title = 'Viewing all trades' if o == False else 'Viewing open trades'
+
+        self.title(title)
         print('Month Start: ' + self.get_month(month) + '\n')
         
         begin = datetime.date.today().replace(month = month, day = 1)
         
-        query = "SELECT * FROM trades WHERE entry_date >= '" + str(begin) + "' ORDER BY entry_date DESC"
+        query = "SELECT * FROM trades WHERE entry_date >= '" + str(begin) + "'"
+
+        if o == False:
+            query += ''
+        else:
+            query += " AND status = '" + o + "'"
+
+        query += " ORDER BY entry_date DESC"
 
         try:
             cur = self.db.cursor()
@@ -210,7 +219,7 @@ class TradeLog:
                     total_comm += row[11] + row[12]
                     comm = row[11] + row[12]
                     positions.append(row[4])
-                    exits.append(row[14])
+                    exits.append({'exit': row[14], 'status': row[17]})
                     total_trades += 1
                     results.append(row[13])
                     statuses.append(row[17])
@@ -257,6 +266,10 @@ class TradeLog:
         else:
             print('Invalid date entered')
 
+    def view_open(self):
+        #view since beginning of current year
+        self.view_trades(1, 'open')
+
     @staticmethod
     def sum_accounts(values):
         tos = 0
@@ -302,8 +315,15 @@ class TradeLog:
                 wins += 1
                 counter += 1
 
-        win_rate = wins / counter * 100
-        avg = sum / counter
+        if wins > 0 and counter > 0:
+            win_rate = wins / counter * 100
+        else:
+            win_rate = float(0)
+
+        if sum > 0 and counter > 0:
+            avg = sum / counter
+        else:
+            avg = float(0)
 
         return [wins, losses, win_rate, avg, lrg, sml]
 
@@ -312,9 +332,9 @@ class TradeLog:
         times = 0
         not_times = 0
         for x in values:
-            if x == 1:
+            if x.get('exit') == 1 and x.get('status') == 'closed':
                 times += 1
-            else:
+            elif x.get('exit') == 0 and x.get('status') == 'closed':
                 not_times += 1
 
         return [times, not_times]
@@ -418,6 +438,7 @@ print('\n--------\n')
 options = {
     1 : t.view_trades,
     2 : t.trade_entry,
+    5 : t.view_open,
     6 : t.menu,
     7 : t.show_rules,
     8 : t.exit_app,
