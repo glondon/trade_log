@@ -191,7 +191,14 @@ class TradeLog:
         
         begin = datetime.date.today().replace(month = month, day = 1)
         
-        query = "SELECT * FROM trades WHERE entry_date >= '" + str(begin) + "' ORDER BY entry_date DESC"
+        query = "SELECT * FROM trades WHERE entry_date >= '" + str(begin) + "'"
+
+        if o == False:
+            query += ''
+        else:
+            query += " AND status = '" + o + "'"
+
+        query += " ORDER BY entry_date DESC"
 
         try:
             cur = self.db.cursor()
