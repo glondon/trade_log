@@ -315,8 +315,15 @@ class TradeLog:
                 wins += 1
                 counter += 1
 
-        win_rate = wins / counter * 100
-        avg = sum / counter
+        if wins > 0 and counter > 0:
+            win_rate = wins / counter * 100
+        else:
+            win_rate = float(0)
+
+        if sum > 0 and counter > 0:
+            avg = sum / counter
+        else:
+            avg = float(0)
 
         return [wins, losses, win_rate, avg, lrg, sml]
 
