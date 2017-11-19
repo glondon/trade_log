@@ -214,6 +214,7 @@ class TradeLog:
                 results = []
                 statuses = []
                 accounts = []
+                symbols = []
                 for row in cur.fetchall():
                     total += row[13]
                     total_comm += row[11] + row[12]
@@ -224,6 +225,7 @@ class TradeLog:
                     results.append(row[13])
                     statuses.append(row[17])
                     accounts.append(row[10])
+                    symbols.append(row[1])
                     print('{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'
                         .format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17]))    
 
@@ -247,6 +249,7 @@ class TradeLog:
                 print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
                 print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
                 print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2]))
+                print('Number of times ES traded: ' + str(self.traded_most(symbols)))
             else:
                 print('No trades found')
         except ValueError as e:
@@ -269,6 +272,11 @@ class TradeLog:
     def view_open(self):
         #view since beginning of current year
         self.view_trades(1, 'open')
+
+    @staticmethod
+    def traded_most(values):
+        #only counting ES for now - since I know it's the favorite
+        return values.count('ES')
 
     @staticmethod
     def sum_accounts(values):
