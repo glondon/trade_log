@@ -249,7 +249,8 @@ class TradeLog:
                 print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
                 print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
                 print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2]))
-                print('Number of times ES traded: ' + str(self.traded_most(symbols)))
+                if o == False:
+                    print('Number of times ES traded: ' + str(self.traded_most(symbols)))
             else:
                 print('No trades found')
         except ValueError as e:
