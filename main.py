@@ -236,7 +236,6 @@ class TradeLog:
                 win_rate = self.win_rate(results)
                 status_sum = self.sum_statuses(statuses)
                 acc_sum = self.sum_accounts(accounts)
-                most_traded = self.traded_most(symbols)
                 print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
@@ -250,7 +249,7 @@ class TradeLog:
                 print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
                 print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
                 print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2]))
-                print('Number of times ES traded: ' + str(most_traded))
+                print('Number of times ES traded: ' + str(self.traded_most(symbols)))
             else:
                 print('No trades found')
         except ValueError as e:
