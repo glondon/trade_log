@@ -232,7 +232,7 @@ class TradeLog:
                     if o == False:
                         print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17])
                     else:
-                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], row[2])
+                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], format(row[2], '.2f'))
                     print(print_row)    
 
                 cur.close()
