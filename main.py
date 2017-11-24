@@ -282,6 +282,9 @@ class TradeLog:
 
     def view_exit_notes(self):
         self.title('Early Exit Notes')
+        #start with trades in most recent trading month
+        begin = datetime.date.today().replace(month = month, day = 1)
+        query = "SELECT symbol, notes FROM trades WHERE early_exit = 1 AND exit_date >= '" + str(begin) + "' ORDER BY exit_date"
 
     @staticmethod
     def format_price(value):
