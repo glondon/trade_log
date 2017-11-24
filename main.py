@@ -14,7 +14,8 @@ class TradeLog:
     #    print('init')
 
     def menu(self):
-        #TODO finish adding menu items
+        self.title('Menu')
+
         menu_list = [
             '1.  View trades - current month',
             '2.  Add new trade',
@@ -27,10 +28,9 @@ class TradeLog:
             '9.  Show watchlist',
             '10. Show weekly trade ideas',
             '11. Add trade idea',
-            '12. View trades - certain date'
+            '12. View trades - certain date',
+            '13. View notes on trades exited early'
         ]
-
-        self.title('Menu')
 
         for item in menu_list:
             print(item)
@@ -280,6 +280,24 @@ class TradeLog:
         #view since beginning of current year
         self.view_trades(1, 'open')
 
+    def view_exit_notes(self):
+        self.title('Early Exit Notes')
+        #start with trades in most recent trading month
+        begin = datetime.date.today().replace(day = 1)
+        query = "SELECT symbol, notes FROM trades WHERE early_exit = 1 AND exit_date >= '" + str(begin) + "' ORDER BY exit_date"
+
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                for row in cur.fetchall():
+                    print(row[0] + ' - ' + row[1])
+                    print('---------------------------------------------')
+            else:
+                print('No trades notes found')
+        except ValueError as e:
+            print('Problem retrieving trades\n' + e)
+
     @staticmethod
     def format_price(value):
         temp = str(value)
@@ -416,17 +434,11 @@ class TradeLog:
 
     @staticmethod
     def validate_int(value):
-        while True:
-            try:
-                value = int(value)
-            except ValueError:
-                return False
-            else:
-                break
-        if value < 1 or value > 12:
-            return False
-        else:
+        try:
+            value = int(value)
             return value
+        except ValueError:
+            return False
 
     @staticmethod
     def split_string(values):
@@ -472,7 +484,8 @@ options = {
     9 : t.show_watchlist,
     10 : t.show_trade_plan,
     11 : t.add_idea,
-    12 : t.view_trades_date
+    12 : t.view_trades_date,
+    13 : t.view_exit_notes
 }
 
 while True:
