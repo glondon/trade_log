@@ -1,7 +1,6 @@
-import sys
-import os
 import pymysql
 import datetime
+import utils
 from pprint import pprint
 
 class TradeLog:
@@ -14,7 +13,7 @@ class TradeLog:
     #    print('init')
 
     def menu(self):
-        self.title('Menu')
+        utils.title('Menu')
 
         menu_list = [
             '1.  View trades - current month',
@@ -40,7 +39,7 @@ class TradeLog:
         cur = self.db.cursor()
         cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
 
-        self.title('Trading Rules')
+        utils.title('Trading Rules')
 
         for row in cur.fetchall():
             print(row[0])
@@ -53,7 +52,7 @@ class TradeLog:
         cur = self.db.cursor()
         cur.execute("SELECT ticker FROM watchlist ORDER BY ticker")
 
-        self.title('Watchlist')
+        utils.title('Watchlist')
 
         watchlist = ''
         result = cur.fetchall()
@@ -76,7 +75,7 @@ class TradeLog:
         query = "SELECT ticker, notes, idea_date FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY idea_date DESC"
         cur.execute(query)
 
-        self.title('Trade ideas')
+        utils.title('Trade ideas')
 
         if cur.rowcount > 0:
             to_show = ''
@@ -88,14 +87,14 @@ class TradeLog:
             print('None')
 
     def trade_entry(self):
-        self.title('Trade Entry')
+        utils.title('Trade Entry')
 
         print('Enter the symbol, entry price, position, date, and account:\n(comma separated):\n')
 
         values = input()
 
         if values != '':
-            result = self.split_string(values)
+            result = utils.split_string(values)
             if len(result) == 5:
                 symbol = result[0]
                 entry_price = result[1]
@@ -110,11 +109,11 @@ class TradeLog:
 
                 if len(symbol) > 8 or len(symbol) == 0:
                     errors.append('Symbol cannot be empty or greater than 5')
-                if not self.validate_float(entry_price):
+                if not utils.validate_float(entry_price):
                     errors.append('Entry price not a valid float value')
                 if not position in self.positions:
                     errors.append('Position can only be long or short')
-                if not self.validate_date(trade_date):
+                if not utils.validate_date(trade_date):
                     errors.append('Invalid trade date entered')
                 if not account in self.accounts:
                     errors.append('Account not valid')
@@ -139,14 +138,14 @@ class TradeLog:
             print('Nothing entered')
 
     def add_idea(self):
-        self.title('Add Trade Idea')
+        utils.title('Add Trade Idea')
 
         print('Enter symbol & notes (comma separated):\n')
 
         values = input()
 
         if values != '':
-            result = self.split_string(values)
+            result = utils.split_string(values)
             if len(result) == 2:
                 symbol = result[0]
                 notes = result[1]
@@ -186,8 +185,8 @@ class TradeLog:
 
         title = 'Viewing all trades' if o == False else 'Viewing open trades'
 
-        self.title(title)
-        print('Month Start: ' + self.get_month(month) + '\n')
+        utils.title(title)
+        print('Month Start: ' + utils.get_month(month) + '\n')
         
         begin = datetime.date.today().replace(month = month, day = 1)
         
@@ -232,16 +231,16 @@ class TradeLog:
                     if o == False:
                         print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17])
                     else:
-                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], self.format_price(row[2]))
+                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], utils.format_price(row[2]))
                     print(print_row)    
 
                 cur.close()
                 after_comm = total - total_comm
-                pos_sum = self.sum_positions(positions)
-                exit_early = self.sum_exit_early(exits)
-                win_rate = self.win_rate(results)
-                status_sum = self.sum_statuses(statuses)
-                acc_sum = self.sum_accounts(accounts)
+                pos_sum = utils.sum_positions(positions)
+                exit_early = utils.sum_exit_early(exits)
+                win_rate = utils.win_rate(results)
+                status_sum = utils.sum_statuses(statuses)
+                acc_sum = utils.sum_accounts(accounts)
                 print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
@@ -256,7 +255,7 @@ class TradeLog:
                 print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
                 print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2]))
                 if o == False:
-                    print('Number of times ES traded: ' + str(self.traded_most(symbols)))
+                    print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
             else:
                 print('No trades found')
         except ValueError as e:
@@ -267,7 +266,7 @@ class TradeLog:
 
         month = input()
 
-        if self.validate_int(month):
+        if utils.validate_int(month):
             month = int(month)
             if month < 1 or month > 12:
                 print('Invalid month entered')
@@ -281,7 +280,7 @@ class TradeLog:
         self.view_trades(1, 'open')
 
     def view_exit_notes(self):
-        self.title('Early Exit Notes')
+        utils.title('Early Exit Notes')
         #start with trades in most recent trading month
         begin = datetime.date.today().replace(day = 1)
         query = "SELECT symbol, notes FROM trades WHERE early_exit = 1 AND exit_date >= '" + str(begin) + "' ORDER BY exit_date"
@@ -298,175 +297,6 @@ class TradeLog:
         except ValueError as e:
             print('Problem retrieving trades\n' + e)
 
-    @staticmethod
-    def format_price(value):
-        temp = str(value)
-        if temp.find('.') != -1:
-            i, f = temp.split('.')
-            if len(f) == 4:
-                if int(f[2]) > 0:
-                    return value
-                else:
-                    return format(value, '.2f')
-
-
-    @staticmethod
-    def traded_most(values):
-        #only counting ES for now - since I know it's the favorite
-        return values.count('ES')
-
-    @staticmethod
-    def sum_accounts(values):
-        tos = 0
-        ibg = 0
-        ibc = 0
-
-        for x in values:
-            if x == 'tos':
-                tos += 1
-            elif x == 'ibg':
-                ibg += 1
-            else:
-                ibc += 1
-
-        return [tos, ibg, ibc]
-
-    @staticmethod
-    def sum_statuses(values):
-        open = 0
-        closed = 0
-        for x in values:
-            if x == 'open':
-                open += 1
-            else:
-                closed += 1
-
-        return [open, closed]
-
-    @staticmethod
-    def win_rate(values):
-        wins = 0
-        losses = 0
-        counter = 0
-        sum = 0
-        lrg = max(values)
-        sml = min(values)
-        for x in values:
-            sum += x
-            if x < 0:
-                losses += 1
-                counter += 1
-            elif x > 0:
-                wins += 1
-                counter += 1
-
-        if wins > 0 and counter > 0:
-            win_rate = wins / counter * 100
-        else:
-            win_rate = float(0)
-
-        if sum > 0 and counter > 0:
-            avg = sum / counter
-        else:
-            avg = float(0)
-
-        return [wins, losses, win_rate, avg, lrg, sml]
-
-    @staticmethod
-    def sum_exit_early(values):
-        times = 0
-        not_times = 0
-        for x in values:
-            if x.get('exit') == 1 and x.get('status') == 'closed':
-                times += 1
-            elif x.get('exit') == 0 and x.get('status') == 'closed':
-                not_times += 1
-
-        return [times, not_times]
-
-    @staticmethod
-    def sum_positions(values):
-        lng = 0
-        sht = 0
-        for x in values:
-            if x == 'long':
-                lng += 1
-            else:
-                sht += 1
-
-        return [lng, sht]
-
-    @staticmethod
-    def exit_app():
-        sys.exit('Trade Log exited')
-
-    # utility methods
-
-    @staticmethod
-    def title(string):
-        print('\n-------------')
-        print(string + ':')
-        print('-------------\n')
-
-    @staticmethod
-    def validate_float(value):
-        try:
-            test = float(value)
-        except ValueError:
-            return False
-
-        if value.find('.') != -1:
-            i, f = value.split('.')
-            if len(f) == 2 or len(f) == 1:
-                return True
-            else:
-                return False
-        else:
-            return True
-
-    @staticmethod
-    def validate_date(value):
-        try:
-            datetime.datetime.strptime(value, '%Y-%m-%d')
-            return True
-        except ValueError:
-            return False
-
-    @staticmethod
-    def validate_int(value):
-        try:
-            value = int(value)
-            return value
-        except ValueError:
-            return False
-
-    @staticmethod
-    def split_string(values):
-        return [item.strip() for item in values.split(',')]
-
-    @staticmethod
-    def get_month(month):
-        months = {
-            1 : 'January',
-            2 : 'February',
-            3 : 'March',
-            4 : 'April',
-            5 : 'May',
-            6 : 'June',
-            7 : 'July',
-            8 : 'August',
-            9 : 'September',
-            10 : 'October',
-            11 : 'November',
-            12 : 'December'
-        }
-
-        if month in months:
-            return months[month]
-        else:
-            return 'Invalid Month'
-
-
 # class end - start running
 
 t = TradeLog()
@@ -480,7 +310,7 @@ options = {
     5 : t.view_open,
     6 : t.menu,
     7 : t.show_rules,
-    8 : t.exit_app,
+    8 : utils.exit_app,
     9 : t.show_watchlist,
     10 : t.show_trade_plan,
     11 : t.add_idea,
@@ -490,7 +320,7 @@ options = {
 
 while True:
     option = input('Choose option\n')
-    entered = t.validate_int(option)
+    entered = utils.validate_int(option)
 
     if(entered != False):
         if entered in options:
