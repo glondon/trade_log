@@ -2,6 +2,7 @@ import sys
 import os
 import pymysql
 import datetime
+import utils
 from pprint import pprint
 
 class TradeLog:
@@ -232,7 +233,7 @@ class TradeLog:
                     if o == False:
                         print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17])
                     else:
-                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], self.format_price(row[2]))
+                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], utils.format_price(row[2]))
                     print(print_row)    
 
                 cur.close()
@@ -298,16 +299,7 @@ class TradeLog:
         except ValueError as e:
             print('Problem retrieving trades\n' + e)
 
-    @staticmethod
-    def format_price(value):
-        temp = str(value)
-        if temp.find('.') != -1:
-            i, f = temp.split('.')
-            if len(f) == 4:
-                if int(f[2]) > 0:
-                    return value
-                else:
-                    return format(value, '.2f')
+    
 
 
     @staticmethod
@@ -396,10 +388,6 @@ class TradeLog:
 
         return [lng, sht]
 
-    @staticmethod
-    def exit_app():
-        sys.exit('Trade Log exited')
-
     # utility methods
 
     @staticmethod
@@ -480,7 +468,7 @@ options = {
     5 : t.view_open,
     6 : t.menu,
     7 : t.show_rules,
-    8 : t.exit_app,
+    8 : utils.exit_app,
     9 : t.show_watchlist,
     10 : t.show_trade_plan,
     11 : t.add_idea,
