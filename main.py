@@ -63,15 +63,19 @@ class TradeLog:
                         d_converted += str(d) + '-'
 
                 print('Last viewed trade rules on: ' + d_converted)
+                last_date = datetime.datetime.strptime(d_converted, '%Y-%m-%d').date()
+            else:
+                compare_last_date = False
                 
             cur.close()
 
         #update last viewed date to present
         date = datetime.date.today()
-        with self.db.cursor() as cur:
-            cur.execute("INSERT INTO actions (viewed_rules) VALUES (%s)", (date))
-            self.db.commit()
-            cur.close()
+        if last_date != False and date > last_date:
+            with self.db.cursor() as cur:
+                cur.execute("INSERT INTO actions (viewed_rules) VALUES (%s)", (date))
+                self.db.commit()
+                cur.close()
 
         print('Total Rules: ' + str(counter - 1))
 
