@@ -4,13 +4,16 @@ import utils
 from pprint import pprint
 
 class TradeLog:
-
-    db = pymysql.connect(host = 'localhost', port = 3306, user = 'root', passwd = '', db = 'trade_log')
+    db = None
     positions = ['long', 'short']
     accounts = ['tos', 'ibg', 'ibc']
 
-    #def __init__(self):
-    #    print('init')
+    def __init__(self):
+        try:
+            self.db = pymysql.connect(host = 'localhost', port = 3306, user = 'root', passwd = '', db = 'trade_log')
+        except ValueError as e:
+            print('Unable to connect to DB' + e)
+            utils.exit_app()
 
     def menu(self):
         utils.title('Menu')
@@ -22,7 +25,7 @@ class TradeLog:
             '4.  Remove a trade',
             '5.  View all open trades',
             '6.  View menu',
-            '7.  Show trading rules',
+            '7.  View trading rules',
             '8.  Exit program',
             '9.  Show watchlist',
             '10. Show weekly trade ideas',
@@ -35,20 +38,44 @@ class TradeLog:
             print(item)
 
     def show_rules(self):
-        #TODO finish adding trading rules
-        cur = self.db.cursor()
-        cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
-
         utils.title('Trading Rules')
+        with self.db.cursor() as cur:
+            cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
+            counter = 1
 
-        for row in cur.fetchall():
-            print(row[0])
-            print('-------------------------------------------------')
+            for row in cur.fetchall():
+                print(str(counter) + ' - ' + row[0])
+                print('-------------------------------------------------')
+                counter += 1
 
-        cur.close()
+            cur.close()
+
+        #get last viewed
+        with self.db.cursor() as cur:
+            cur.execute("SELECT viewed_rules FROM actions ORDER BY viewed_rules DESC LIMIT 1")
+            last_viewed = cur.fetchone()
+            if last_viewed != None:
+                d_converted = ''
+                for i, d in enumerate(last_viewed):
+                    if i == len(last_viewed) -1:
+                        d_converted += str(d)
+                    else:
+                        d_converted += str(d) + '-'
+
+                print('Last viewed trade rules on: ' + d_converted)
+                
+            cur.close()
+
+        #update last viewed date to present
+        date = datetime.date.today()
+        with self.db.cursor() as cur:
+            cur.execute("INSERT INTO actions (viewed_rules) VALUES (%s)", (date))
+            self.db.commit()
+            cur.close()
+
+        print('Total Rules: ' + str(counter - 1))
 
     def show_watchlist(self):
-        #TODO finish adding watchlist items
         cur = self.db.cursor()
         cur.execute("SELECT ticker FROM watchlist ORDER BY ticker")
 
