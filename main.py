@@ -4,13 +4,16 @@ import utils
 from pprint import pprint
 
 class TradeLog:
-
-    db = pymysql.connect(host = 'localhost', port = 3306, user = 'root', passwd = '', db = 'trade_log')
+    db = None
     positions = ['long', 'short']
     accounts = ['tos', 'ibg', 'ibc']
 
-    #def __init__(self):
-    #    print('init')
+    def __init__(self):
+        try:
+            self.db = pymysql.connect(host = 'localhost', port = 3306, user = 'root', passwd = '', db = 'trade_log')
+        except ValueError as e:
+            print('Unable to connect to DB' + e)
+            utils.exit_app()
 
     def menu(self):
         utils.title('Menu')
