@@ -226,7 +226,7 @@ class TradeLog:
         if o == False:
             query += ''
         else:
-            query += " AND status = '" + o + "'"
+            query += " AND status = 'open'"
 
         query += " ORDER BY entry_date DESC"
 
@@ -262,12 +262,13 @@ class TradeLog:
                     statuses.append(row[17])
                     accounts.append(row[10])
                     symbols.append(row[1])
-                    if row[10] == 'tos':
-                        t_results.append(row[13])   
-                    elif row[10] == 'ibg':
-                        g_results.append(row[13])
-                    else:
-                        b_results.append(row[13]) 
+                    if o == False:
+                        if row[10] == 'tos':
+                            t_results.append(row[13])   
+                        elif row[10] == 'ibg':
+                            g_results.append(row[13])
+                        else:
+                            b_results.append(row[13]) 
 
                     if o == False:
                         print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17])
@@ -276,16 +277,14 @@ class TradeLog:
                     print(print_row)    
 
                 cur.close()
-                pprint(t_results)
-                pprint(g_results)
-                pprint(b_results)
                 after_comm = total - total_comm
                 pos_sum = utils.sum_positions(positions)
                 exit_early = utils.sum_exit_early(exits)
                 win_rate = utils.win_rate(results)
                 status_sum = utils.sum_statuses(statuses)
                 acc_sum = utils.sum_accounts(accounts)
-                acc_results = utils.account_results(t_results, g_results, b_results)
+                if o == False:
+                    acc_results = utils.account_results(t_results, g_results, b_results)
                 print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
@@ -298,9 +297,9 @@ class TradeLog:
                 minimum = '$' + str(win_rate[5]) if win_rate[5] < 0 else 'No losses'
                 print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
                 print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
-                print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2]))
-                print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
+                print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2])) 
                 if o == False:
+                    print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
                     print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
             else:
                 print('No trades found')
@@ -323,7 +322,7 @@ class TradeLog:
 
     def view_open(self):
         #view since beginning of current year
-        self.view_trades(1, 'open')
+        self.view_trades(1, True)
 
     def view_exit_notes(self):
         utils.title('Early Exit Notes')
