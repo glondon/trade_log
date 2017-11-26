@@ -11,8 +11,8 @@ class TradeLog:
     def __init__(self):
         try:
             self.db = pymysql.connect(host = 'localhost', port = 3306, user = 'root', passwd = '', db = 'trade_log')
-        except ValueError as e:
-            print('Unable to connect to DB' + e)
+        except Exception as e:
+            print('Unable to connect to DB\n' + str(e))
             utils.exit_app()
 
     def menu(self):
