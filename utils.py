@@ -150,4 +150,10 @@ def get_month(month):
         return months[month]
     else:
         return 'Invalid Month'
+
+def account_results(t_vals, g_vals, b_vals):
+    t = sum(t_vals)
+    g = sum(g_vals)
+    b = sum(b_vals)
+    return [t, g, b]
         
