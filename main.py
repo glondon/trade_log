@@ -25,7 +25,7 @@ class TradeLog:
             '4.  Remove a trade',
             '5.  View all open trades',
             '6.  View menu',
-            '7.  Show trading rules',
+            '7.  View trading rules',
             '8.  Exit program',
             '9.  Show watchlist',
             '10. Show weekly trade ideas',
@@ -38,17 +38,20 @@ class TradeLog:
             print(item)
 
     def show_rules(self):
-        #TODO finish adding trading rules
         cur = self.db.cursor()
         cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
+        counter = 1
 
         utils.title('Trading Rules')
 
         for row in cur.fetchall():
-            print(row[0])
+            print(str(counter) + ' - ' + row[0])
             print('-------------------------------------------------')
+            counter += 1
 
         cur.close()
+
+        print('Total Rules: ' + str(counter - 1))
 
     def show_watchlist(self):
         #TODO finish adding watchlist items
