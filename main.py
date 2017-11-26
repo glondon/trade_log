@@ -55,7 +55,15 @@ class TradeLog:
             cur.execute("SELECT viewed_rules FROM actions ORDER BY viewed_rules DESC LIMIT 1")
             last_viewed = cur.fetchone()
             if last_viewed != None:
-                print('Last viewed trade rules on: ' + str(last_viewed))
+                d_converted = ''
+                for i, d in enumerate(last_viewed):
+                    if i == len(last_viewed) -1:
+                        d_converted += str(d)
+                    else:
+                        d_converted += str(d) + '-'
+
+                print('Last viewed trade rules on: ' + d_converted)
+                
             cur.close()
 
         #update last viewed date to present
