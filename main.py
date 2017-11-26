@@ -38,23 +38,36 @@ class TradeLog:
             print(item)
 
     def show_rules(self):
-        cur = self.db.cursor()
-        cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
-        counter = 1
-
         utils.title('Trading Rules')
+        with self.db.cursor() as cur:
+            cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
+            counter = 1
 
-        for row in cur.fetchall():
-            print(str(counter) + ' - ' + row[0])
-            print('-------------------------------------------------')
-            counter += 1
+            for row in cur.fetchall():
+                print(str(counter) + ' - ' + row[0])
+                print('-------------------------------------------------')
+                counter += 1
 
-        cur.close()
+            cur.close()
+
+        #get last viewed
+        with self.db.cursor() as cur:
+            cur.execute("SELECT viewed_rules FROM actions ORDER BY viewed_rules DESC LIMIT 1")
+            last_viewed = cur.fetchone()
+            if last_viewed != None:
+                print('Last viewed trade rules on: ' + str(last_viewed))
+            cur.close()
+
+        #update last viewed date to present
+        date = datetime.date.today()
+        with self.db.cursor() as cur:
+            cur.execute("INSERT INTO actions (viewed_rules) VALUES (%s)", (date))
+            self.db.commit()
+            cur.close()
 
         print('Total Rules: ' + str(counter - 1))
 
     def show_watchlist(self):
-        #TODO finish adding watchlist items
         cur = self.db.cursor()
         cur.execute("SELECT ticker FROM watchlist ORDER BY ticker")
 
