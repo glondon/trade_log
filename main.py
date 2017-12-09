@@ -31,7 +31,8 @@ class TradeLog:
             '10. Show weekly trade ideas',
             '11. Add trade idea',
             '12. View trades - certain date',
-            '13. View notes on trades exited early'
+            '13. View notes on trades exited early',
+            '14. View trade reasons on open trades'
         ]
 
         for item in menu_list:
@@ -342,6 +343,23 @@ class TradeLog:
         except ValueError as e:
             print('Problem retrieving trades\n' + e)
 
+    def trade_reasons(self):
+        utils.title('Open Trade Reasons')
+        #view all current open trades
+        query = "SELECT symbol, entry, trade_reasons FROM trades WHERE status = 'open' ORDER BY symbol"
+
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                for row in cur.fetchall():
+                    print(row[0] + ' ' + str(row[1]) + ' ' + row[2])
+                    print('---------------------------------------------')
+            else:
+                print('No open trades found')
+        except ValueError as e:
+            print('Problem retrieving trades\n' + e)
+
 # class end - start running
 
 t = TradeLog()
@@ -360,7 +378,8 @@ options = {
     10 : t.show_trade_plan,
     11 : t.add_idea,
     12 : t.view_trades_date,
-    13 : t.view_exit_notes
+    13 : t.view_exit_notes,
+    14 : t.trade_reasons
 }
 
 while True:
