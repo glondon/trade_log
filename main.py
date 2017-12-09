@@ -353,7 +353,7 @@ class TradeLog:
             cur.execute(query)
             if cur.rowcount > 0:
                 for row in cur.fetchall():
-                    print(row[0] + ' ' + str(row[1]) + ' ' + row[2])
+                    print(row[0] + ' ' + str(utils.format_price(row[1])) + ' ' + row[2])
                     print('---------------------------------------------')
             else:
                 print('No open trades found')
