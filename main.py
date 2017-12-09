@@ -289,6 +289,7 @@ class TradeLog:
                 print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
+                print('Note: commissions not exact')
 
                 print('\nTotal trades: ' + str(total_trades))
                 print('Total long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
