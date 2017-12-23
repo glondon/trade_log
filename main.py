@@ -7,6 +7,7 @@ class TradeLog:
     db = None
     positions = ['long', 'short']
     accounts = ['tos', 'ibg', 'ibc']
+    table_trades = 'trades'
 
     def __init__(self):
         try:
@@ -365,6 +366,20 @@ class TradeLog:
     def loss_notes(self):
         utils.title('Loss Notes')
         #view for current month 
+        start = datetime.date.today().replace(day = 1)
+        query = "SELECT symbol, notes FROM " + self.table_trades + " WHERE result < 0 AND status = 'closed' AND exit_date >= " + str(start)
+
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                for row in cur.fetchall():
+                    print(row[0] + ' - ' + row[1])
+                    print('---------------------------------------------')
+            else:
+                print('No losing trades this month')
+        except ValueError as e:
+            print('Problem retrieving trades\n' + e)
 
 # class end - start running
 
