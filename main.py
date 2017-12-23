@@ -32,7 +32,8 @@ class TradeLog:
             '11. Add trade idea',
             '12. View trades - certain date',
             '13. View notes on trades exited early',
-            '14. View trade reasons on open trades'
+            '14. View trade reasons on open trades',
+            '15. View notes on losing trades'
         ]
 
         for item in menu_list:
@@ -361,6 +362,10 @@ class TradeLog:
         except ValueError as e:
             print('Problem retrieving trades\n' + e)
 
+    def loss_notes(self):
+        utils.title('Loss Notes')
+        #view for current month 
+
 # class end - start running
 
 t = TradeLog()
@@ -380,7 +385,8 @@ options = {
     11 : t.add_idea,
     12 : t.view_trades_date,
     13 : t.view_exit_notes,
-    14 : t.trade_reasons
+    14 : t.trade_reasons,
+    15 : t.loss_notes
 }
 
 while True:
