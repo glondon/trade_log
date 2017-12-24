@@ -8,6 +8,11 @@ class TradeLog:
     positions = ['long', 'short']
     accounts = ['tos', 'ibg', 'ibc']
     table_trades = 'trades'
+    table_rules = 'trade_rules'
+    table_actions = 'actions'
+    table_watchlist = 'watchlist'
+    table_ideas = 'trade_ideas'
+    table_reasons = 'trade_reasons'
 
     def __init__(self):
         try:
@@ -43,7 +48,7 @@ class TradeLog:
     def show_rules(self):
         utils.title('Trading Rules')
         with self.db.cursor() as cur:
-            cur.execute("SELECT rule FROM trade_rules ORDER BY rule DESC")
+            cur.execute("SELECT rule FROM " + self.table_rules + " ORDER BY rule DESC")
             counter = 1
 
             for row in cur.fetchall():
@@ -55,7 +60,7 @@ class TradeLog:
 
         #get last viewed
         with self.db.cursor() as cur:
-            cur.execute("SELECT viewed_rules FROM actions ORDER BY viewed_rules DESC LIMIT 1")
+            cur.execute("SELECT viewed_rules FROM " + self.table_actions + " ORDER BY viewed_rules DESC LIMIT 1")
             last_viewed = cur.fetchone()
             if last_viewed != None:
                 d_converted = ''
@@ -76,7 +81,7 @@ class TradeLog:
         date = datetime.date.today()
         if last_date != False and date > last_date:
             with self.db.cursor() as cur:
-                cur.execute("INSERT INTO actions (viewed_rules) VALUES (%s)", (date))
+                cur.execute("INSERT INTO " + self.table_actions + " (viewed_rules) VALUES (%s)", (date))
                 self.db.commit()
                 cur.close()
 
@@ -84,7 +89,7 @@ class TradeLog:
 
     def show_watchlist(self):
         cur = self.db.cursor()
-        cur.execute("SELECT ticker FROM watchlist ORDER BY ticker")
+        cur.execute("SELECT ticker FROM " + self.table_watchlist + " ORDER BY ticker")
 
         utils.title('Watchlist')
 
@@ -106,7 +111,7 @@ class TradeLog:
         #TODO finish adding weekly trade ideas
         begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
         cur = self.db.cursor()
-        query = "SELECT ticker, notes, idea_date FROM trade_ideas WHERE idea_date >= " + str(begin_week) + " ORDER BY idea_date DESC"
+        query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= '" + str(begin_week) + "' ORDER BY idea_date DESC"
         cur.execute(query)
 
         utils.title('Trade ideas')
@@ -156,7 +161,7 @@ class TradeLog:
                     for x in errors:
                         print(x)
                 else:
-                    query = "INSERT INTO trades (symbol, entry, position, entry_date, account) VALUES (%s, %s, %s, %s, %s)"
+                    query = "INSERT INTO " + self.table_trades + " (symbol, entry, position, entry_date, account) VALUES (%s, %s, %s, %s, %s)"
                     try:
                         cur = self.db.cursor()
                         cur.execute(query, (symbol, entry_price, position, trade_date, account))
@@ -197,7 +202,7 @@ class TradeLog:
                     for x in errors:
                         print(x)
                 else:
-                    query = "INSERT INTO trade_ideas (ticker, notes, idea_date) VALUES (%s, %s, %s)"
+                    query = "INSERT INTO " + self.table_ideas + " (ticker, notes, idea_date) VALUES (%s, %s, %s)"
                     try:
                         cur = self.db.cursor()
                         cur.execute(query, (symbol, notes, date))
@@ -224,7 +229,7 @@ class TradeLog:
         
         begin = datetime.date.today().replace(month = month, day = 1)
         
-        query = "SELECT * FROM trades WHERE entry_date >= '" + str(begin) + "'"
+        query = "SELECT * FROM " + self.table_trades + " WHERE entry_date >= '" + str(begin) + "'"
 
         if o == False:
             query += ''
@@ -332,7 +337,7 @@ class TradeLog:
         utils.title('Early Exit Notes')
         #start with trades in most recent trading month
         begin = datetime.date.today().replace(day = 1)
-        query = "SELECT symbol, notes FROM trades WHERE early_exit = 1 AND exit_date >= '" + str(begin) + "' ORDER BY exit_date"
+        query = "SELECT symbol, notes FROM " + self.table_trades + " WHERE early_exit = 1 AND exit_date >= '" + str(begin) + "' ORDER BY exit_date"
 
         try:
             cur = self.db.cursor()
@@ -349,7 +354,7 @@ class TradeLog:
     def trade_reasons(self):
         utils.title('Open Trade Reasons')
         #view all current open trades
-        query = "SELECT symbol, entry, trade_reasons FROM trades WHERE status = 'open' ORDER BY symbol"
+        query = "SELECT symbol, entry, " + self.table_reasons + " FROM trades WHERE status = 'open' ORDER BY symbol"
 
         try:
             cur = self.db.cursor()
