@@ -111,7 +111,7 @@ class TradeLog:
         #TODO finish adding weekly trade ideas
         begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
         cur = self.db.cursor()
-        query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= " + str(begin_week) + " ORDER BY idea_date DESC"
+        query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= '" + str(begin_week) + "' ORDER BY idea_date DESC"
         cur.execute(query)
 
         utils.title('Trade ideas')
