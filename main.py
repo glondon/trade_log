@@ -87,6 +87,18 @@ class TradeLog:
 
         print('Total Rules: ' + str(counter - 1))
 
+    def check_last_rules_viewed(self):
+        today = datetime.date.today()
+        query = "SELECT viewed_rules FROM " + self.table_actions + " ORDER BY viewed_rules DESC LIMIT 1"
+        cur = self.db.cursor()
+        cur.execute(query)
+        last_viewed = cur.fetchone()
+
+        if last_viewed != None:
+            diff = (today - last_viewed[0]).days
+            if diff >= 7:
+                print('\nWARNING: It has been ' + str(diff) + ' days since viewing trading rules\n')
+
     def show_watchlist(self):
         cur = self.db.cursor()
         cur.execute("SELECT ticker FROM " + self.table_watchlist + " ORDER BY ticker")
@@ -392,6 +404,7 @@ t = TradeLog()
 t.menu()
 
 print('\n--------\n')
+t.check_last_rules_viewed()
 
 options = {
     1 : t.view_trades,
