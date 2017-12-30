@@ -228,18 +228,31 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def view_trades(self, month = False, o = False):
+    def view_trades(self, month = False, year = False, o = False):
 
         if month == False:
             today = datetime.datetime.today()
             month = today.month
 
-        title = 'Viewing all trades' if o == False else 'Viewing open trades since beginning of year'
+        if year == False:
+            open_title = 'Viewing open trades since beginning of year'
+        else:
+            open_title = 'Viewing open trades since ' + str(year)
+
+        title = 'Viewing all trades' if o == False else open_title
 
         utils.title(title)
-        print('Month Start: ' + utils.get_month(month) + '\n')
-        
-        begin = datetime.date.today().replace(month = month, day = 1)
+
+        if year == False:
+            print('Month Start: ' + utils.get_month(month) + '\n')
+        else:
+            print('Month Start: ' + utils.get_month(month) + ' ' + str(year) + '\n')
+
+
+        if year == False:
+            begin = datetime.date.today().replace(month = month, day = 1)
+        else:
+            begin = datetime.date.today().replace(month = month, day = 1, year = year)
         
         query = "SELECT * FROM " + self.table_trades + " WHERE entry_date >= '" + str(begin) + "'"
 
@@ -328,22 +341,61 @@ class TradeLog:
             print('Problem retrieving trades\n' + e)
 
     def view_trades_date(self):
-        print('Enter a starting month (1-12):\n')
+        passed = True
+        month = input('Enter a month (1-12)\n')
+        year = input('Enter a year (2017-2018)\n')
 
-        month = input()
+        c_m = utils.validate_int(month)
+        c_y = utils.validate_int(year)
 
-        if utils.validate_int(month):
-            month = int(month)
-            if month < 1 or month > 12:
+        if c_m != False:
+            if not utils.month_check(c_m):
+                passed = False
                 print('Invalid month entered')
-            else:
-                self.view_trades(month)
         else:
-            print('Invalid date entered')
+            print('Invalid month integer entered')
+
+        if c_y != False:
+            if not utils.year_check(c_y):
+                passed = False
+                print('Invalid year entered')
+        else:
+            print('Invalid year integer entered')
+
+        if passed:
+            self.view_trades(c_m, c_y, False)
 
     def view_open(self):
-        #view since beginning of current year
-        self.view_trades(1, True)
+        #view since beginning of year for default
+        view = input('\nDo you want to view month and year? (Y or N)\n')
+        passed = True
+        if view.upper() == 'Y':
+            month = input('\nChoose month (1-12)\n')
+            year = input('\nChoose year (2017-2018)\n')
+            c_m = utils.validate_int(month)
+            c_y = utils.validate_int(year)
+            if c_m != False:
+                if not utils.month_check(c_m):
+                    passed = False
+                    print('Month can only be 1-12')
+            else:
+                passed = False
+                print('Invalid month integer entered')
+
+            if c_y != False:
+                if not utils.year_check(c_y):
+                    passed = False
+                    print('Year can only be 2017-2018')
+            else:
+                print('Invalid year integer entered')
+
+            if passed:
+                self.view_trades(c_m, c_y, True)
+
+        elif view.upper() == 'N':
+            self.view_trades(1, False, True)
+        else:
+            print('Invalid option')
 
     def view_exit_notes(self):
         utils.title('Early Exit Notes')
