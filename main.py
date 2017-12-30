@@ -242,7 +242,11 @@ class TradeLog:
         title = 'Viewing all trades' if o == False else open_title
 
         utils.title(title)
-        print('Month Start: ' + utils.get_month(month) + '\n')
+
+        if year == False:
+            print('Month Start: ' + utils.get_month(month) + '\n')
+        else:
+            print('Month Start: ' + utils.get_month(month) + ' ' + str(year) + '\n')
 
 
         if year == False:
@@ -337,18 +341,29 @@ class TradeLog:
             print('Problem retrieving trades\n' + e)
 
     def view_trades_date(self):
-        print('Enter a starting month (1-12):\n')
+        passed = True
+        month = input('Enter a month (1-12)\n')
+        year = input('Enter a year (2017-2018)\n')
 
-        month = input()
+        c_m = utils.validate_int(month)
+        c_y = utils.validate_int(year)
 
-        if utils.validate_int(month):
-            month = int(month)
-            if month < 1 or month > 12:
+        if c_m != False:
+            if not utils.month_check(c_m):
+                passed = False
                 print('Invalid month entered')
-            else:
-                self.view_trades(month)
         else:
-            print('Invalid date entered')
+            print('Invalid month integer entered')
+
+        if c_y != False:
+            if not utils.year_check(c_y):
+                passed = False
+                print('Invalid year entered')
+        else:
+            print('Invalid year integer entered')
+
+        if passed:
+            self.view_trades(c_m, c_y, False)
 
     def view_open(self):
         #view since beginning of year for default
