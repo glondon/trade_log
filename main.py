@@ -353,17 +353,14 @@ class TradeLog:
     def view_open(self):
         #view since beginning of year for default
         view = input('\nDo you want to view month and year? (Y or N)\n')
-        passed = True;
-        years = [2017, 2018]
+        passed = True
         if view.upper() == 'Y':
             month = input('\nChoose month (1-12)\n')
-            year = input('\nChoose year (2016-2018)\n')
+            year = input('\nChoose year (2017-2018)\n')
             c_m = utils.validate_int(month)
             c_y = utils.validate_int(year)
             if c_m != False:
-                if c_m >= 1 or c_m <= 12:
-                    pass
-                else:
+                if not utils.month_check(c_m):
                     passed = False
                     print('Month can only be 1-12')
             else:
@@ -371,9 +368,7 @@ class TradeLog:
                 print('Invalid month integer entered')
 
             if c_y != False:
-                if c_y in years:
-                    pass
-                else:
+                if not utils.year_check(c_y):
                     passed = False
                     print('Year can only be 2017-2018')
             else:
@@ -382,8 +377,8 @@ class TradeLog:
             if passed:
                 self.view_trades(c_m, c_y, True)
 
-        elif view.uper() == 'N':
-            self.view_trades(1, True)
+        elif view.upper() == 'N':
+            self.view_trades(1, False, True)
         else:
             print('Invalid option')
 
