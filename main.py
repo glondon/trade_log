@@ -234,7 +234,7 @@ class TradeLog:
             today = datetime.datetime.today()
             month = today.month
 
-        title = 'Viewing all trades' if o == False else 'Viewing open trades'
+        title = 'Viewing all trades' if o == False else 'Viewing open trades since beginning of year'
 
         utils.title(title)
         print('Month Start: ' + utils.get_month(month) + '\n')
