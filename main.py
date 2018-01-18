@@ -234,7 +234,7 @@ class TradeLog:
             month = today.month
 
         if year == False:
-            open_title = 'Viewing open trades since beginning of year'
+            open_title = 'Viewing current open trades'
         else:
             open_title = 'Viewing open trades since ' + str(year)
 
