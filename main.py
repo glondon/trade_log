@@ -365,36 +365,7 @@ class TradeLog:
             self.view_trades(c_m, c_y, False)
 
     def view_open(self):
-        #view since beginning of year for default
-        view = input('\nDo you want to view month and year? (Y or N)\n')
-        passed = True
-        if view.upper() == 'Y':
-            month = input('\nChoose month (1-12)\n')
-            year = input('\nChoose year (2017-2018)\n')
-            c_m = utils.validate_int(month)
-            c_y = utils.validate_int(year)
-            if c_m != False:
-                if not utils.month_check(c_m):
-                    passed = False
-                    print('Month can only be 1-12')
-            else:
-                passed = False
-                print('Invalid month integer entered')
-
-            if c_y != False:
-                if not utils.year_check(c_y):
-                    passed = False
-                    print('Year can only be 2017-2018')
-            else:
-                print('Invalid year integer entered')
-
-            if passed:
-                self.view_trades(c_m, c_y, True)
-
-        elif view.upper() == 'N':
-            self.view_trades(1, False, True)
-        else:
-            print('Invalid option')
+        self.view_trades(False, False, True)
 
     def view_exit_notes(self):
         utils.title('Early Exit Notes')
