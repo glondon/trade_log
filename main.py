@@ -120,7 +120,6 @@ class TradeLog:
         cur.close()
 
     def show_trade_plan(self):
-        #TODO finish adding weekly trade ideas
         begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
         cur = self.db.cursor()
         query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= '" + str(begin_week) + "' ORDER BY idea_date DESC"
@@ -254,12 +253,12 @@ class TradeLog:
         else:
             begin = datetime.date.today().replace(month = month, day = 1, year = year)
         
-        query = "SELECT * FROM " + self.table_trades + " WHERE entry_date >= '" + str(begin) + "'"
+        query = "SELECT * FROM " + self.table_trades
 
         if o == False:
-            query += ''
+            query += " WHERE exit_date >= '" + str(begin) + "'"
         else:
-            query += " AND status = 'open'"
+            query += " WHERE status = 'open'"
 
         query += " ORDER BY entry_date DESC"
 
