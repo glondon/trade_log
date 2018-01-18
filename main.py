@@ -120,7 +120,6 @@ class TradeLog:
         cur.close()
 
     def show_trade_plan(self):
-        #TODO finish adding weekly trade ideas
         begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
         cur = self.db.cursor()
         query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= '" + str(begin_week) + "' ORDER BY idea_date DESC"
@@ -234,12 +233,7 @@ class TradeLog:
             today = datetime.datetime.today()
             month = today.month
 
-        if year == False:
-            open_title = 'Viewing open trades since beginning of year'
-        else:
-            open_title = 'Viewing open trades since ' + str(year)
-
-        title = 'Viewing all trades' if o == False else open_title
+        title = 'Viewing closed trades' if o == False else 'Viewing current open trades'
 
         utils.title(title)
 
@@ -248,18 +242,17 @@ class TradeLog:
         else:
             print('Month Start: ' + utils.get_month(month) + ' ' + str(year) + '\n')
 
-
         if year == False:
             begin = datetime.date.today().replace(month = month, day = 1)
         else:
             begin = datetime.date.today().replace(month = month, day = 1, year = year)
         
-        query = "SELECT * FROM " + self.table_trades + " WHERE entry_date >= '" + str(begin) + "'"
+        query = "SELECT * FROM " + self.table_trades
 
         if o == False:
-            query += ''
+            query += " WHERE exit_date >= '" + str(begin) + "'"
         else:
-            query += " AND status = 'open'"
+            query += " WHERE status = 'open'"
 
         query += " ORDER BY entry_date DESC"
 
@@ -366,36 +359,7 @@ class TradeLog:
             self.view_trades(c_m, c_y, False)
 
     def view_open(self):
-        #view since beginning of year for default
-        view = input('\nDo you want to view month and year? (Y or N)\n')
-        passed = True
-        if view.upper() == 'Y':
-            month = input('\nChoose month (1-12)\n')
-            year = input('\nChoose year (2017-2018)\n')
-            c_m = utils.validate_int(month)
-            c_y = utils.validate_int(year)
-            if c_m != False:
-                if not utils.month_check(c_m):
-                    passed = False
-                    print('Month can only be 1-12')
-            else:
-                passed = False
-                print('Invalid month integer entered')
-
-            if c_y != False:
-                if not utils.year_check(c_y):
-                    passed = False
-                    print('Year can only be 2017-2018')
-            else:
-                print('Invalid year integer entered')
-
-            if passed:
-                self.view_trades(c_m, c_y, True)
-
-        elif view.upper() == 'N':
-            self.view_trades(1, False, True)
-        else:
-            print('Invalid option')
+        self.view_trades(False, False, True)
 
     def view_exit_notes(self):
         utils.title('Early Exit Notes')
