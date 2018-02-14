@@ -99,6 +99,24 @@ class TradeLog:
             if diff >= 7:
                 print('\nWARNING: It has been ' + str(diff) + ' days since viewing trading rules\n')
 
+    def check_expirations(self):
+        today = datetime.date.today()
+        to_show = []
+        query = "SELECT symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00'"
+        cur = self.db.cursor()
+        cur.execute(query)
+
+        if cur.rowcount > 0:
+            for row in cur.fetchall():
+                if (today - row[1]).days <= 7:
+                    to_show.append({'symbol': row[0], 'exp': row[1]})
+
+            if len(to_show) > 0:
+                print('The following option trades are expiring soon:')
+                for row in to_show:
+                    print(row.get('symbol') + ' ' + str(row.get('exp')))
+
+
     def show_watchlist(self):
         cur = self.db.cursor()
         cur.execute("SELECT ticker FROM " + self.table_watchlist + " ORDER BY ticker")
@@ -421,6 +439,7 @@ t.menu()
 
 print('\n--------\n')
 t.check_last_rules_viewed()
+t.check_expirations()
 
 options = {
     1 : t.view_trades,
