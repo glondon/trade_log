@@ -108,13 +108,13 @@ class TradeLog:
 
         if cur.rowcount > 0:
             for row in cur.fetchall():
-                if (today - row[1]).days <= 7:
+                if (today - row[1]).days >= -7:
                     to_show.append({'symbol': row[0], 'exp': row[1]})
 
             if len(to_show) > 0:
                 print('The following option trades are expiring soon:')
                 for row in to_show:
-                    print(row.get('symbol') + ' ' + str(row.get('exp')))
+                    print(row.get('symbol') + ' - ' + str(row.get('exp')))
 
 
     def show_watchlist(self):
