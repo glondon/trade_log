@@ -1,5 +1,6 @@
 import pymysql
 import datetime
+from datetime import timedelta
 import utils
 from pprint import pprint
 
@@ -39,7 +40,8 @@ class TradeLog:
             '12. View trades - certain date',
             '13. View notes on trades exited early',
             '14. View trade reasons on open trades',
-            '15. View notes on losing trades'
+            '15. View notes on losing trades',
+            '16. View last 5 days profit/loss'
         ]
 
         for item in menu_list:
@@ -432,6 +434,25 @@ class TradeLog:
         except ValueError as e:
             print('Problem retrieving trades\n' + e)
 
+    def last_5_days(self):
+        utils.title('Last 5 days')
+        start = datetime.date.today() - timedelta(days = 5)
+        query = "SELECT SUM(result), exit_date FROM " + self.table_trades + " WHERE exit_date >= '" + str(start) + "' GROUP BY exit_date ORDER BY exit_date DESC"
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                total = 0
+                for row in cur.fetchall():
+                    total += row[0]
+                    print('DATE: ' + str(row[1]) + ' SUM: $' + str(row[0]))
+
+                print('\nTotal: $' + str(total))
+            else:
+                print('No results')
+        except ValueError as e:
+            print('Problem retrieving data\n' + e)
+
 # class end - start running
 
 t = TradeLog()
@@ -454,7 +475,8 @@ options = {
     12 : t.view_trades_date,
     13 : t.view_exit_notes,
     14 : t.trade_reasons,
-    15 : t.loss_notes
+    15 : t.loss_notes,
+    16 : t.last_5_days
 }
 
 while True:
