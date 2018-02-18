@@ -442,8 +442,12 @@ class TradeLog:
             cur = self.db.cursor()
             cur.execute(query)
             if cur.rowcount > 0:
+                total = 0
                 for row in cur.fetchall():
-                    print(row)
+                    total += row[0]
+                    print('DATE: ' + str(row[1]) + ' SUM: $' + str(row[0]))
+
+                print('\nTotal: $' + str(total))
             else:
                 print('No results')
         except ValueError as e:
