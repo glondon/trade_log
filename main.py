@@ -437,7 +437,17 @@ class TradeLog:
     def last_5_days(self):
         utils.title('Last 5 days')
         start = datetime.date.today() - timedelta(days = 5)
-        pprint(start)
+        query = "SELECT SUM(result), exit_date FROM " + self.table_trades + " WHERE exit_date >= '" + str(start) + "' GROUP BY exit_date ORDER BY exit_date DESC"
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                for row in cur.fetchall():
+                    print(row)
+            else:
+                print('No results')
+        except ValueError as e:
+            print('Problem retrieving data\n' + e)
 
 # class end - start running
 
