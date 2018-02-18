@@ -1,5 +1,6 @@
 import pymysql
 import datetime
+from datetime import timedelta
 import utils
 from pprint import pprint
 
@@ -434,7 +435,9 @@ class TradeLog:
             print('Problem retrieving trades\n' + e)
 
     def last_5_days(self):
-        pass
+        utils.title('Last 5 days')
+        start = datetime.date.today() - timedelta(days = 5)
+        pprint(start)
 
 # class end - start running
 
