@@ -448,6 +448,7 @@ class TradeLog:
                     print('DATE: ' + str(row[1]) + ' SUM: $' + str(row[0]))
 
                 print('\nTotal: $' + str(total))
+                print('\nNote: Excludes commissions')
             else:
                 print('No results')
         except ValueError as e:
