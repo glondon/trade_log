@@ -130,7 +130,7 @@ class TradeLog:
         for i, row in enumerate(result):
             if i == len(result) - 1:
                 watchlist += row[0]
-            elif i == 10 or i == 21 or i == 32:
+            elif i == 10 or i == 21 or i == 32 or i == 43 or i == 54:
                 watchlist += '\n'
             else:
                 watchlist += row[0] + ', '
