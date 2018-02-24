@@ -420,14 +420,14 @@ class TradeLog:
         utils.title('Loss Notes')
         #view for current month 
         start = datetime.date.today().replace(day = 1)
-        query = "SELECT symbol, notes FROM " + self.table_trades + " WHERE result < 0 AND status = 'closed' AND exit_date >= '" + str(start) + "'"
+        query = "SELECT symbol, notes, result FROM " + self.table_trades + " WHERE result < 0 AND status = 'closed' AND exit_date >= '" + str(start) + "'"
 
         try:
             cur = self.db.cursor()
             cur.execute(query)
             if cur.rowcount > 0:
                 for row in cur.fetchall():
-                    print(row[0] + ' - ' + row[1])
+                    print(row[0] + ' - $' + str(row[2]) + ' - ' + row[1])
                     print('---------------------------------------------')
             else:
                 print('No losing trades this month')
