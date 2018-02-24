@@ -426,9 +426,13 @@ class TradeLog:
             cur = self.db.cursor()
             cur.execute(query)
             if cur.rowcount > 0:
+                total = 0
                 for row in cur.fetchall():
+                    total += row[2]
                     print(row[0] + ' - $' + str(row[2]) + ' - ' + row[1])
                     print('---------------------------------------------')
+
+                print('\nTotal losses: $' + str(total))
             else:
                 print('No losing trades this month')
         except ValueError as e:
