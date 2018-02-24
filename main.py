@@ -418,8 +418,8 @@ class TradeLog:
 
     def loss_notes(self):
         utils.title('Loss Notes')
-        #view for current month 
-        start = datetime.date.today().replace(day = 1)
+        #view for current year
+        start = datetime.date.today().replace(day = 1, month = 1)
         query = "SELECT symbol, notes, result FROM " + self.table_trades + " WHERE result < 0 AND status = 'closed' AND exit_date >= '" + str(start) + "'"
 
         try:
