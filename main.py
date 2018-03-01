@@ -119,13 +119,13 @@ class TradeLog:
                     print(row.get('symbol') + ' - ' + str(row.get('exp')))
 
     def check_exit_date_open(self):
-        query = "SELECT symbol FROM " + self.table_trades + " WHERE status = 'open' AND exit_date > '0000-00-00'"
+        query = "SELECT id, symbol FROM " + self.table_trades + " WHERE status = 'open' AND exit_date > '0000-00-00'"
         cur = self.db.cursor()
         cur.execute(query)
         if cur.rowcount > 0:
             print('The following have not been closed properly:\n')
             for row in cur.fetchall():
-                print('SYMBOL: ' + row[0])
+                print('ID : SYMBOL: ' + str(row[0]) + ' : ' + row[1])
 
 
     def show_watchlist(self):
