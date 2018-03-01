@@ -118,6 +118,15 @@ class TradeLog:
                 for row in to_show:
                     print(row.get('symbol') + ' - ' + str(row.get('exp')))
 
+    def check_exit_date_open(self):
+        query = "SELECT id, symbol FROM " + self.table_trades + " WHERE status = 'open' AND exit_date > '0000-00-00'"
+        cur = self.db.cursor()
+        cur.execute(query)
+        if cur.rowcount > 0:
+            print('The following have not been closed properly:\n')
+            for row in cur.fetchall():
+                print('ID : SYMBOL: ' + str(row[0]) + ' : ' + row[1])
+
 
     def show_watchlist(self):
         cur = self.db.cursor()
@@ -466,6 +475,7 @@ t.menu()
 print('\n--------\n')
 t.check_last_rules_viewed()
 t.check_expirations()
+t.check_exit_date_open()
 
 options = {
     1 : t.view_trades,
