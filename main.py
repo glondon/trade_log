@@ -52,10 +52,11 @@ class TradeLog:
         with self.db.cursor() as cur:
             cur.execute("SELECT rule FROM " + self.table_rules + " ORDER BY rule DESC")
             counter = 1
-
+            print('Press ENTER to continue viewing each trading rule\n')
             for row in cur.fetchall():
                 print(str(counter) + ' - ' + row[0])
                 print('-------------------------------------------------')
+                input()
                 counter += 1
 
             cur.close()
