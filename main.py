@@ -55,7 +55,6 @@ class TradeLog:
             print('Press ENTER to continue viewing each trading rule & "q" to quit\n')
             for row in cur.fetchall():
                 print(str(counter) + ' - ' + row[0])
-                print('-------------------------------------------------')
                 counter += 1
                 q = input()
                 if q == 'q':
