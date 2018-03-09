@@ -41,7 +41,7 @@ class TradeLog:
             '13. View notes on trades exited early',
             '14. View trade reasons on open trades',
             '15. View notes on losing trades',
-            '16. View last 5 days profit/loss'
+            '16. View days profit/loss'
         ]
 
         for item in menu_list:
@@ -451,15 +451,48 @@ class TradeLog:
         except ValueError as e:
             print('Problem retrieving trades\n' + e)
 
-    def last_5_days(self):
-        utils.title('Last 5 days')
-        start = datetime.date.today() - timedelta(days = 5)
+    def view_days(self):
+        utils.title('Days - proft/loss')
+        options = {
+            1 : 'Last 5 days',
+            2 : 'Last 10 days',
+            3 : 'Last 20 days',
+            4 : 'Last 30 days'
+        }
+        for k, v in options.items():
+            print(str(k) + ' - ' + v)
+
+        choice = input('\nChoose option\n')
+        entered = utils.validate_int(choice)
+        viewing = '\nViewing last '
+        if entered != False:
+            if entered == 1:
+                start = datetime.date.today() - timedelta(days = 5)
+                viewing =+ '5'
+            elif entered == 2:
+                start = datetime.date.today() - timedelta(days = 10)
+                viewing += '10'
+            elif entered == 3:
+                start = datetime.date.today() - timedelta(days = 20)
+                viewing += '20'
+            elif entered == 4:
+                start = datetime.date.today() - timedelta(days = 30)
+                viewing += '30'
+            else:
+                print('Invalid option - exited')
+                return
+        else:
+            print('Not a valid integer - exited')
+            return
+
+        viewing += ' days'
         query = "SELECT SUM(result), exit_date FROM " + self.table_trades + " WHERE exit_date >= '" + str(start) + "' GROUP BY exit_date ORDER BY exit_date DESC"
         try:
             cur = self.db.cursor()
             cur.execute(query)
             if cur.rowcount > 0:
                 total = 0
+                print(viewing + '\n')
                 for row in cur.fetchall():
                     total += row[0]
                     print('DATE: ' + str(row[1]) + ' SUM: $' + str(row[0]))
@@ -495,7 +528,7 @@ options = {
     13 : t.view_exit_notes,
     14 : t.trade_reasons,
     15 : t.loss_notes,
-    16 : t.last_5_days
+    16 : t.view_days
 }
 
 while True:
