@@ -451,8 +451,8 @@ class TradeLog:
         except ValueError as e:
             print('Problem retrieving trades\n' + e)
 
-    def last_5_days(self):
-        utils.title('Last 5 days')
+    def view_days(self):
+        utils.title('Days - proft/loss')
         start = datetime.date.today() - timedelta(days = 5)
         query = "SELECT SUM(result), exit_date FROM " + self.table_trades + " WHERE exit_date >= '" + str(start) + "' GROUP BY exit_date ORDER BY exit_date DESC"
         try:
@@ -495,7 +495,7 @@ options = {
     13 : t.view_exit_notes,
     14 : t.trade_reasons,
     15 : t.loss_notes,
-    16 : t.last_5_days
+    16 : t.view_days
 }
 
 while True:
