@@ -41,7 +41,7 @@ class TradeLog:
             '13. View notes on trades exited early',
             '14. View trade reasons on open trades',
             '15. View notes on losing trades',
-            '16. View last 5 days profit/loss'
+            '16. View days profit/loss'
         ]
 
         for item in menu_list:
