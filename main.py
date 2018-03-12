@@ -467,16 +467,16 @@ class TradeLog:
         viewing = '\nViewing last '
         if entered != False:
             if entered == 1:
-                start = datetime.date.today() - timedelta(days = 5)
+                sel = 5
                 viewing += '5'
             elif entered == 2:
-                start = datetime.date.today() - timedelta(days = 10)
+                sel = 10
                 viewing += '10'
             elif entered == 3:
-                start = datetime.date.today() - timedelta(days = 20)
+                sel = 20
                 viewing += '20'
             elif entered == 4:
-                start = datetime.date.today() - timedelta(days = 30)
+                sel = 30
                 viewing += '30'
             else:
                 print('Invalid option - exited')
@@ -486,6 +486,7 @@ class TradeLog:
             return
 
         viewing += ' days'
+        start = datetime.date.today() - timedelta(days = sel)
         query = "SELECT SUM(result), exit_date FROM " + self.table_trades + " WHERE exit_date >= '" + str(start) + "' GROUP BY exit_date ORDER BY exit_date DESC"
         try:
             cur = self.db.cursor()
