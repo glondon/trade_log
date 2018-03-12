@@ -468,7 +468,7 @@ class TradeLog:
         if entered != False:
             if entered == 1:
                 start = datetime.date.today() - timedelta(days = 5)
-                viewing =+ '5'
+                viewing += '5'
             elif entered == 2:
                 start = datetime.date.today() - timedelta(days = 10)
                 viewing += '10'
