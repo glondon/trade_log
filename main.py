@@ -518,8 +518,11 @@ class TradeLog:
                 if cur.rowcount > 0:
                     row = cur.fetchone()
                     cols = [i[0] for i in cur.description]
-                    pprint(row)
-                    pprint(cols)
+                    c = 0
+                    print('\nViewing ID: ' + str(id) + '\n')
+                    for v in cols:
+                        print(v + ' : ' + str(row[c]))
+                        c += 1
                 else:
                     print('No results found\n')
             except ValueError as e:
