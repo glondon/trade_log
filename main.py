@@ -507,7 +507,25 @@ class TradeLog:
             print('Problem retrieving data\n' + e)
 
     def view_trade_by_id(self):
-        pass
+        utils.title('View trade by ID')
+        enter = input('Enter ID\n')
+        id = utils.validate_int(enter)
+        if id != False:
+            query = "SELECT * FROM " + self.table_trades + " WHERE id = " + str(id)
+            try:
+                cur = self.db.cursor()
+                cur.execute(query)
+                if cur.rowcount > 0:
+                    row = cur.fetchone()
+                    cols = [i[0] for i in cur.description]
+                    pprint(row)
+                    pprint(cols)
+                else:
+                    print('No results found\n')
+            except ValueError as e:
+                print('Problem retrieving data\n')
+        else:
+            print('Not a valid integer\n')
 
 # class end - start running
 
