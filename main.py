@@ -41,7 +41,8 @@ class TradeLog:
             '13. View notes on trades exited early',
             '14. View trade reasons on open trades',
             '15. View notes on losing trades',
-            '16. View days profit/loss'
+            '16. View days profit/loss',
+            '17. View trade by ID'
         ]
 
         for item in menu_list:
@@ -505,6 +506,30 @@ class TradeLog:
         except ValueError as e:
             print('Problem retrieving data\n' + e)
 
+    def view_trade_by_id(self):
+        utils.title('View trade by ID')
+        enter = input('Enter ID\n')
+        id = utils.validate_int(enter)
+        if id != False:
+            query = "SELECT * FROM " + self.table_trades + " WHERE id = " + str(id)
+            try:
+                cur = self.db.cursor()
+                cur.execute(query)
+                if cur.rowcount > 0:
+                    row = cur.fetchone()
+                    cols = [i[0] for i in cur.description]
+                    c = 0
+                    print('\nViewing ID: ' + str(id) + '\n')
+                    for v in cols:
+                        print(v + ' : ' + str(row[c]))
+                        c += 1
+                else:
+                    print('No results found\n')
+            except ValueError as e:
+                print('Problem retrieving data\n')
+        else:
+            print('Not a valid integer\n')
+
 # class end - start running
 
 t = TradeLog()
@@ -529,7 +554,8 @@ options = {
     13 : t.view_exit_notes,
     14 : t.trade_reasons,
     15 : t.loss_notes,
-    16 : t.view_days
+    16 : t.view_days,
+    17 : t.view_trade_by_id
 }
 
 while True:
