@@ -530,6 +530,21 @@ class TradeLog:
         else:
             print('Not a valid integer\n')
 
+    def get_locked_open(self):
+        query = "SELECT result FROM " + self.table_trades + " WHERE status = 'open' AND result > 0"
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                total = 0
+                for row in cur.fetchall():
+                    total += row[0]
+                return total
+            else:
+                return 0
+        except ValueError as e:
+            return 0
+
 # class end - start running
 
 t = TradeLog()
