@@ -348,6 +348,12 @@ class TradeLog:
                 print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
+                if o == False:
+                    open_locked = self.get_locked_open()
+                    if open_locked > 0:
+                        print('-------------')
+                        print('{0:<21} {1:6}'.format('Total open locked: ', '$' + str(open_locked)))
+                        print('{0:<21} {1:6}'.format('Total with open: ', '$' + str(after_comm + open_locked)))
                 print('Note: commissions not exact')
 
                 print('\nTotal trades: ' + str(total_trades))
@@ -529,6 +535,21 @@ class TradeLog:
                 print('Problem retrieving data\n')
         else:
             print('Not a valid integer\n')
+
+    def get_locked_open(self):
+        query = "SELECT result FROM " + self.table_trades + " WHERE status = 'open' AND result > 0"
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                total = 0
+                for row in cur.fetchall():
+                    total += row[0]
+                return total
+            else:
+                return 0
+        except ValueError as e:
+            return 0
 
 # class end - start running
 
