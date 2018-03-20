@@ -37,7 +37,7 @@ class TradeLog:
             '9.  Show watchlist',
             '10. Show weekly trade ideas',
             '11. Add trade idea',
-            '12. View trades - certain date',
+            '12. View trades - certain date or month',
             '13. View notes on trades exited early',
             '14. View trade reasons on open trades',
             '15. View notes on losing trades',
@@ -261,7 +261,7 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def view_trades(self, month = False, year = False, o = False):
+    def view_trades(self, month = False, year = False, o = False, m = False):
 
         if month == False:
             today = datetime.datetime.today()
@@ -276,6 +276,13 @@ class TradeLog:
         else:
             print('Month Start: ' + utils.get_month(month) + ' ' + str(year) + '\n')
 
+        if m == False:
+            pass
+        else:
+            if m == 'y':
+                print('Viewing ' + utils.get_month(month) + ' only\n')
+                end = datetime.date.today().replace(month = month + 1, day = 1, year = year) - datetime.timedelta(days = 1)
+
         if year == False:
             begin = datetime.date.today().replace(month = month, day = 1)
         else:
@@ -285,6 +292,11 @@ class TradeLog:
 
         if o == False:
             query += " WHERE exit_date >= '" + str(begin) + "'"
+            if m == False:
+                pass
+            else:
+                if m == 'y':
+                    query += " AND exit_date <= '" + str(end) + "'"
         else:
             query += " WHERE status = 'open'"
 
@@ -377,6 +389,8 @@ class TradeLog:
         passed = True
         month = input('Enter a month (1-12)\n')
         year = input('Enter a year (2017-2018)\n')
+        m_o = input("View only selected month's range? (y/n)\n")
+        month_options = ['y', 'n']
 
         c_m = utils.validate_int(month)
         c_y = utils.validate_int(year)
@@ -395,8 +409,14 @@ class TradeLog:
         else:
             print('Invalid year integer entered')
 
+        if m_o.lower() in month_options:
+            pass
+        else:
+            passed = False
+            print('Month option must by y or n')
+
         if passed:
-            self.view_trades(c_m, c_y, False)
+            self.view_trades(c_m, c_y, False, m_o)
 
     def view_open(self):
         self.view_trades(False, False, True)
