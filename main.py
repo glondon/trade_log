@@ -42,7 +42,8 @@ class TradeLog:
             '14. View trade reasons on open trades',
             '15. View notes on losing trades',
             '16. View days profit/loss',
-            '17. View trade by ID'
+            '17. View trade by ID',
+            '18. View trades by month'
         ]
 
         for item in menu_list:
@@ -398,6 +399,9 @@ class TradeLog:
         if passed:
             self.view_trades(c_m, c_y, False)
 
+    def view_trades_by_month(self):
+        pass
+
     def view_open(self):
         self.view_trades(False, False, True)
 
@@ -576,7 +580,8 @@ options = {
     14 : t.trade_reasons,
     15 : t.loss_notes,
     16 : t.view_days,
-    17 : t.view_trade_by_id
+    17 : t.view_trade_by_id,
+    18 : t.view_trades_by_month
 }
 
 while True:
