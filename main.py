@@ -37,13 +37,12 @@ class TradeLog:
             '9.  Show watchlist',
             '10. Show weekly trade ideas',
             '11. Add trade idea',
-            '12. View trades - certain date',
+            '12. View trades - certain date or month',
             '13. View notes on trades exited early',
             '14. View trade reasons on open trades',
             '15. View notes on losing trades',
             '16. View days profit/loss',
-            '17. View trade by ID',
-            '18. View trades by month'
+            '17. View trade by ID'
         ]
 
         for item in menu_list:
@@ -378,6 +377,8 @@ class TradeLog:
         passed = True
         month = input('Enter a month (1-12)\n')
         year = input('Enter a year (2017-2018)\n')
+        month_only = input("View only selected month's range? (y/n)\n")
+        month_options = ['y', 'n']
 
         c_m = utils.validate_int(month)
         c_y = utils.validate_int(year)
@@ -398,9 +399,6 @@ class TradeLog:
 
         if passed:
             self.view_trades(c_m, c_y, False)
-
-    def view_trades_by_month(self):
-        pass
 
     def view_open(self):
         self.view_trades(False, False, True)
@@ -580,8 +578,7 @@ options = {
     14 : t.trade_reasons,
     15 : t.loss_notes,
     16 : t.view_days,
-    17 : t.view_trade_by_id,
-    18 : t.view_trades_by_month
+    17 : t.view_trade_by_id
 }
 
 while True:
