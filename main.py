@@ -141,7 +141,9 @@ class TradeLog:
 
         watchlist = ''
         result = cur.fetchall()
+        total = 0
         for i, row in enumerate(result):
+            total += 1
             if i == len(result) - 1:
                 watchlist += row[0]
             elif i % 10 == 0:
@@ -150,6 +152,7 @@ class TradeLog:
                 watchlist += row[0] + ', '
 
         print(watchlist)
+        print('\nTotal watchlist items: ' + str(total))
 
         cur.close()
 
