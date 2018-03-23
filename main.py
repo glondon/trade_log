@@ -283,8 +283,14 @@ class TradeLog:
             pass
         else:
             if m == 'y':
+                if month != 12:
+                    to_m = month + 1
+                    to_y = year
+                else:
+                    to_m = 1
+                    to_y = year + 1
                 print('Viewing ' + utils.get_month(month) + ' only\n')
-                end = datetime.date.today().replace(month = month + 1, day = 1, year = year) - datetime.timedelta(days = 1)
+                end = datetime.date.today().replace(month = to_m, day = 1, year = to_y) - datetime.timedelta(days = 1)
 
         if year == False:
             begin = datetime.date.today().replace(month = month, day = 1)
