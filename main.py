@@ -584,7 +584,7 @@ class TradeLog:
 
     def view_open_ex_dates(self):
         utils.title('Open expiration dates')
-        query = "SELECT id, symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00'"
+        query = "SELECT id, symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00' ORDER BY exp_date"
         try:
             cur = self.db.cursor()
             cur.execute(query)
