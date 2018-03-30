@@ -42,7 +42,8 @@ class TradeLog:
             '14. View trade reasons on open trades',
             '15. View notes on losing trades',
             '16. View days profit/loss',
-            '17. View trade by ID'
+            '17. View trade by ID',
+            '18. View open expiration dates'
         ]
 
         for item in menu_list:
@@ -581,6 +582,21 @@ class TradeLog:
         except ValueError as e:
             return 0
 
+    def view_open_ex_dates(self):
+        utils.title('Open expiration dates')
+        query = "SELECT id, symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00' ORDER BY exp_date"
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                for row in cur.fetchall():
+                    print('{0:5} {1:13} {2:12}'.format('ID: ' + str(row[0]), 'SYMBOL: ' + row[1], 'EXPIRES: ' + str(row[2])))
+            else:
+                print('No results')
+        except ValueError as e:
+            print('DB Error: ' + e)
+        
+
 # class end - start running
 
 t = TradeLog()
@@ -606,7 +622,8 @@ options = {
     14 : t.trade_reasons,
     15 : t.loss_notes,
     16 : t.view_days,
-    17 : t.view_trade_by_id
+    17 : t.view_trade_by_id,
+    18 : t.view_open_ex_dates
 }
 
 while True:
