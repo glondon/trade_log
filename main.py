@@ -582,8 +582,20 @@ class TradeLog:
         except ValueError as e:
             return 0
 
-    def view_open_ex_dates():
-        pass
+    def view_open_ex_dates(self):
+        utils.title('Open expiration dates')
+        query = "SELECT id, symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00'"
+        try:
+            cur = self.db.cursor()
+            cur.execute(query)
+            if cur.rowcount > 0:
+                for row in cur.fetchall():
+                    print('ID: ' + str(row[0]) + ' SYMBOL: ' + row[1] + ' EXPIRES: ' + str(row[2]))
+            else:
+                print('No results')
+        except ValueError as e:
+            print('DB Error: ' + e)
+        
 
 # class end - start running
 
