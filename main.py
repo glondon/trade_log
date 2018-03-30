@@ -590,7 +590,7 @@ class TradeLog:
             cur.execute(query)
             if cur.rowcount > 0:
                 for row in cur.fetchall():
-                    print('ID: ' + str(row[0]) + ' SYMBOL: ' + row[1] + ' EXPIRES: ' + str(row[2]))
+                    print('{0:5} {1:13} {2:12}'.format('ID: ' + str(row[0]), 'SYMBOL: ' + row[1], 'EXPIRES: ' + str(row[2])))
             else:
                 print('No results')
         except ValueError as e:
