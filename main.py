@@ -375,8 +375,8 @@ class TradeLog:
                 if o == False:
                     acc_results = utils.account_results(t_results, g_results, b_results)
                 print('{0:<22} {1:6}'.format('\nGross proft: ', '$' + str(total_profit)))
-                print('{0:<22} {1:6}'.format('Gross loss: ', '$' + str(total_loss)))
-                print('{0:<22} {1:6}'.format('Net proft/loss: ', '$' + str(total_profit + total_loss)))
+                print('{0:<21} {1:6}'.format('Gross loss: ', '$' + str(total_loss)))
+                print('{0:<21} {1:6}'.format('Net proft/loss: ', '$' + str(total_profit + total_loss)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
                 if o == False:
