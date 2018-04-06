@@ -322,7 +322,8 @@ class TradeLog:
                 else:
                     format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8} {9:<8}'.format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:PRICE', 'STOP')
                 print(format_header)
-                total = 0
+                total_profit = 0
+                total_loss = 0
                 total_comm = 0
                 positions = []
                 exits = []
@@ -335,7 +336,12 @@ class TradeLog:
                 g_results = []
                 b_results = []
                 for row in cur.fetchall():
-                    total += row[13]
+                    #total += row[13]
+                    if row[13] > 0:
+                        total_profit += row[13]
+                    else:
+                        total_loss += row[13]
+
                     total_comm += row[11] + row[12]
                     comm = row[11] + row[12]
                     positions.append(row[4])
@@ -360,7 +366,7 @@ class TradeLog:
                     print(print_row)    
 
                 cur.close()
-                after_comm = total - total_comm
+                after_comm = (total_profit + total_loss) - total_comm
                 pos_sum = utils.sum_positions(positions)
                 exit_early = utils.sum_exit_early(exits)
                 win_rate = utils.win_rate(results)
@@ -368,7 +374,9 @@ class TradeLog:
                 acc_sum = utils.sum_accounts(accounts)
                 if o == False:
                     acc_results = utils.account_results(t_results, g_results, b_results)
-                print('{0:<22} {1:6}'.format('\nTotal proft/loss: ', '$' + str(total)))
+                print('{0:<22} {1:6}'.format('\nGross proft: ', '$' + str(total_profit)))
+                print('{0:<22} {1:6}'.format('Gross loss: ', '$' + str(total_loss)))
+                print('{0:<22} {1:6}'.format('Net proft/loss: ', '$' + str(total_profit + total_loss)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
                 if o == False:
