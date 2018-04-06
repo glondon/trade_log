@@ -336,7 +336,6 @@ class TradeLog:
                 g_results = []
                 b_results = []
                 for row in cur.fetchall():
-                    #total += row[13]
                     if row[13] > 0:
                         total_profit += row[13]
                     else:
@@ -378,7 +377,7 @@ class TradeLog:
                 print('{0:<21} {1:6}'.format('Gross loss: ', '$' + str(total_loss)))
                 print('{0:<21} {1:6}'.format('Net proft/loss: ', '$' + str(total_profit + total_loss)))
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
-                print('{0:<15} {1:6}'.format('Total final results: ', '$' + str(after_comm)))   
+                print('{0:<21} {1:6}'.format('Final net results: ', '$' + str(after_comm)))   
                 if o == False:
                     open_locked = self.get_locked_open()
                     if open_locked > 0:
