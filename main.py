@@ -266,9 +266,9 @@ class TradeLog:
             print('Nothing entered')
 
     def view_trades(self, month = False, year = False, o = False, m = False):
-
+        today = datetime.datetime.today()
+        now_yr = today.year
         if month == False:
-            today = datetime.datetime.today()
             month = today.month
 
         title = 'Viewing closed trades' if o == False else 'Viewing current open trades'
@@ -379,11 +379,12 @@ class TradeLog:
                 print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
                 print('{0:<21} {1:6}'.format('Final net results: ', '$' + str(after_comm)))   
                 if o == False:
-                    open_locked = self.get_locked_open()
-                    if open_locked > 0:
-                        print('-------------')
-                        print('{0:<21} {1:6}'.format('Total open locked: ', '$' + str(open_locked)))
-                        print('{0:<21} {1:6}'.format('Total with open: ', '$' + str(after_comm + open_locked)))
+                    if month == today.month and now_yr == today.year:
+                        open_locked = self.get_locked_open()
+                        if open_locked > 0:
+                            print('-------------')
+                            print('{0:<21} {1:6}'.format('Total open locked: ', '$' + str(open_locked)))
+                            print('{0:<21} {1:6}'.format('Total with open: ', '$' + str(after_comm + open_locked)))
                 print('Note: commissions not exact')
 
                 print('\nTotal trades: ' + str(total_trades))
