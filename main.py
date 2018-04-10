@@ -604,6 +604,15 @@ class TradeLog:
         except ValueError as e:
             print('DB Error: ' + e)
         
+    def run_query(self, q):
+        try:
+            cur = self.db.cursor()
+            cur.execute(q)
+            if cur.rowcount > 0:
+                return cur.fetchall()
+            return False
+        except ValueError:
+            return False
 
 # class end - start running
 
