@@ -602,7 +602,8 @@ class TradeLog:
                 else:
                     return cur.fetchone()
             return False
-        except ValueError:
+        except ValueError as e:
+            print('DB error: ' + e)
             return False
 
 # class end - start running
