@@ -577,17 +577,13 @@ class TradeLog:
 
     def get_locked_open(self):
         query = "SELECT result FROM " + self.table_trades + " WHERE status = 'open' AND result > 0"
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                total = 0
-                for row in cur.fetchall():
-                    total += row[0]
-                return total
-            else:
-                return 0
-        except ValueError as e:
+        rows = self.run_query(query)
+        if rows != False:
+            total = 0
+            for row in rows:
+                total += row[0]
+            return total
+        else:
             return 0
 
     def view_open_ex_dates(self):
