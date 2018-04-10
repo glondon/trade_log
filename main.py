@@ -596,12 +596,15 @@ class TradeLog:
         else:
             print('No results')
         
-    def run_query(self, q):
+    def run_query(self, q, one = False):
         try:
             cur = self.db.cursor()
             cur.execute(q)
             if cur.rowcount > 0:
-                return cur.fetchall()
+                if one == False:
+                    return cur.fetchall()
+                else:
+                    return cur.fetchone()
             return False
         except ValueError:
             return False
