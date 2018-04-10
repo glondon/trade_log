@@ -534,22 +534,18 @@ class TradeLog:
         viewing += ' days'
         start = datetime.date.today() - timedelta(days = sel)
         query = "SELECT SUM(result), exit_date FROM " + self.table_trades + " WHERE exit_date >= '" + str(start) + "' GROUP BY exit_date ORDER BY exit_date DESC"
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                total = 0
-                print(viewing + '\n')
-                for row in cur.fetchall():
-                    total += row[0]
-                    print('DATE: ' + str(row[1]) + ' SUM: $' + str(row[0]))
+        rows = self.run_query(query)
+        if rows != False:
+            total = 0
+            print(viewing + '\n')
+            for row in rows:
+                total += row[0]
+                print('DATE: ' + str(row[1]) + ' SUM: $' + str(row[0]))
 
-                print('\nTotal: $' + str(total))
-                print('\nNote: Excludes commissions')
-            else:
-                print('No results')
-        except ValueError as e:
-            print('Problem retrieving data\n' + e)
+            print('\nTotal: $' + str(total))
+            print('\nNote: Excludes commissions')
+        else:
+            print('No results')
 
     def view_trade_by_id(self):
         utils.title('View trade by ID')
