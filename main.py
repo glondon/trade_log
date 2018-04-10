@@ -593,16 +593,12 @@ class TradeLog:
     def view_open_ex_dates(self):
         utils.title('Open expiration dates')
         query = "SELECT id, symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00' ORDER BY exp_date"
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                for row in cur.fetchall():
-                    print('{0:5} {1:13} {2:12}'.format('ID: ' + str(row[0]), 'SYMBOL: ' + row[1], 'EXPIRES: ' + str(row[2])))
-            else:
-                print('No results')
-        except ValueError as e:
-            print('DB Error: ' + e)
+        rows = self.run_query(query)
+        if rows != False:
+            for row in rows:
+                print('{0:5} {1:13} {2:12}'.format('ID: ' + str(row[0]), 'SYMBOL: ' + row[1], 'EXPIRES: ' + str(row[2])))
+        else:
+            print('No results')
         
     def run_query(self, q):
         try:
