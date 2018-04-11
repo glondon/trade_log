@@ -462,18 +462,13 @@ class TradeLog:
         utils.title('Open Trade Reasons')
         #view all current open trades
         query = "SELECT symbol, entry, " + self.table_reasons + " FROM trades WHERE status = 'open' ORDER BY symbol"
-
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                for row in cur.fetchall():
-                    print(row[0] + ' ' + str(utils.format_price(row[1])) + ' ' + row[2])
-                    print('---------------------------------------------')
-            else:
-                print('No open trades found')
-        except ValueError as e:
-            print('Problem retrieving trades\n' + e)
+        rows = self.run_query(query)
+        if rows != False:
+            for row in rows:
+                print(row[0] + ' ' + str(utils.format_price(row[1])) + ' ' + row[2])
+                print('---------------------------------------------')
+        else:
+            print('No open trades found')
 
     def loss_notes(self):
         utils.title('Loss Notes')
