@@ -445,18 +445,13 @@ class TradeLog:
         #start with trades in most recent trading month
         begin = datetime.date.today().replace(day = 1)
         query = "SELECT symbol, notes FROM " + self.table_trades + " WHERE early_exit = 1 AND exit_date >= '" + str(begin) + "' ORDER BY exit_date"
-
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                for row in cur.fetchall():
-                    print(row[0] + ' - ' + row[1])
-                    print('---------------------------------------------')
-            else:
-                print('No trades notes found')
-        except ValueError as e:
-            print('Problem retrieving trades\n' + e)
+        rows = self.run_query(query)
+        if rows != False:
+            for row in rows:
+                print(row[0] + ' - ' + row[1])
+                print('---------------------------------------------')
+        else:
+            print('No trades notes found')
 
     def trade_reasons(self):
         utils.title('Open Trade Reasons')
