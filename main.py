@@ -480,22 +480,16 @@ class TradeLog:
         #view for current year
         start = datetime.date.today().replace(day = 1, month = 1)
         query = "SELECT symbol, notes, result FROM " + self.table_trades + " WHERE result < 0 AND status = 'closed' AND exit_date >= '" + str(start) + "'"
-
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                total = 0
-                for row in cur.fetchall():
-                    total += row[2]
-                    print(row[0] + ' - $' + str(row[2]) + ' - ' + row[1])
-                    print('---------------------------------------------')
-
-                print('\nTotal losses: $' + str(total))
-            else:
-                print('No losing trades this month')
-        except ValueError as e:
-            print('Problem retrieving trades\n' + e)
+        rows = self.run_query(query)
+        if rows != False:
+            total = 0
+            for row in rows:
+                total += row[2]
+                print(row[0] + ' - $' + str(row[2]) + ' - ' + row[1])
+                print('---------------------------------------------')
+            print('\nTotal losses: $' + str(total))
+        else:
+            print('No losing trades this month')
 
     def view_days(self):
         utils.title('Days - proft/loss')
