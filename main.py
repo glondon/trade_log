@@ -62,8 +62,6 @@ class TradeLog:
                 if q == 'q':
                     break
                
-
-
             cur.close()
 
         #get last viewed
