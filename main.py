@@ -62,8 +62,6 @@ class TradeLog:
                 if q == 'q':
                     break
                
-
-
             cur.close()
 
         #get last viewed
@@ -98,12 +96,9 @@ class TradeLog:
     def check_last_rules_viewed(self):
         today = datetime.date.today()
         query = "SELECT viewed_rules FROM " + self.table_actions + " ORDER BY viewed_rules DESC LIMIT 1"
-        cur = self.db.cursor()
-        cur.execute(query)
-        last_viewed = cur.fetchone()
-
-        if last_viewed != None:
-            diff = (today - last_viewed[0]).days
+        row = self.run_query(query, True)
+        if row != False:
+            diff = (today - row[0]).days
             if diff >= 7:
                 print('\nWARNING: It has been ' + str(diff) + ' days since viewing trading rules\n')
 
@@ -111,11 +106,9 @@ class TradeLog:
         today = datetime.date.today()
         to_show = []
         query = "SELECT symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00'"
-        cur = self.db.cursor()
-        cur.execute(query)
-
-        if cur.rowcount > 0:
-            for row in cur.fetchall():
+        rows = self.run_query(query)
+        if rows != False:
+            for row in rows:
                 if (today - row[1]).days >= -7:
                     to_show.append({'symbol': row[0], 'exp': row[1]})
 
@@ -126,48 +119,41 @@ class TradeLog:
 
     def check_exit_date_open(self):
         query = "SELECT id, symbol FROM " + self.table_trades + " WHERE status = 'open' AND exit_date > '0000-00-00'"
-        cur = self.db.cursor()
-        cur.execute(query)
-        if cur.rowcount > 0:
+        rows = self.run_query(query)
+        if rows != False:
             print('The following have not been closed properly:\n')
-            for row in cur.fetchall():
+            for row in rows:
                 print('ID : SYMBOL: ' + str(row[0]) + ' : ' + row[1])
 
-
     def show_watchlist(self):
-        cur = self.db.cursor()
-        cur.execute("SELECT ticker FROM " + self.table_watchlist + " ORDER BY ticker")
-
         utils.title('Watchlist')
+        query = "SELECT ticker FROM " + self.table_watchlist + " ORDER BY ticker"
+        rows = self.run_query(query)
+        if rows != False:
+            watchlist = ''
+            total = 0
+            for i, row in enumerate(rows):
+                total += 1
+                if i == len(rows) - 1:
+                    watchlist += row[0]
+                elif i % 10 == 0:
+                    watchlist += '\n'
+                else:
+                    watchlist += row[0] + ', '
 
-        watchlist = ''
-        result = cur.fetchall()
-        total = 0
-        for i, row in enumerate(result):
-            total += 1
-            if i == len(result) - 1:
-                watchlist += row[0]
-            elif i % 10 == 0:
-                watchlist += '\n'
-            else:
-                watchlist += row[0] + ', '
-
-        print(watchlist)
-        print('\nTotal watchlist items: ' + str(total))
-
-        cur.close()
+            print(watchlist)
+            print('\nTotal watchlist items: ' + str(total))
+        else:
+            print('None found')
 
     def show_trade_plan(self):
-        begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
-        cur = self.db.cursor()
-        query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= '" + str(begin_week) + "' ORDER BY idea_date DESC"
-        cur.execute(query)
-
         utils.title('Trade ideas')
-
-        if cur.rowcount > 0:
+        begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
+        query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= '" + str(begin_week) + "' ORDER BY idea_date DESC"
+        rows = self.run_query(query)
+        if rows != False:
             to_show = ''
-            for row in cur.fetchall():
+            for row in rows:
                 to_show += str(row[2]) + ' - ' + row[0] + ' - ' + row[1] + '\n'
 
             print(to_show)
@@ -313,96 +299,91 @@ class TradeLog:
         else:
             query += " WHERE status = 'open' ORDER BY entry_date DESC"
 
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                if o == False:
-                    format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8}'.format('ID', 'SYMBOL', 'POS', 'EX:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:DATE')
-                else:
-                    format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8} {9:<8}'.format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:PRICE', 'STOP')
-                print(format_header)
-                total_profit = 0
-                total_loss = 0
-                total_comm = 0
-                positions = []
-                exits = []
-                total_trades = 0
-                results = []
-                statuses = []
-                accounts = []
-                symbols = []
-                t_results = []
-                g_results = []
-                b_results = []
-                for row in cur.fetchall():
-                    if row[13] > 0:
-                        total_profit += row[13]
-                    else:
-                        total_loss += row[13]
-
-                    total_comm += row[11] + row[12]
-                    comm = row[11] + row[12]
-                    positions.append(row[4])
-                    exits.append({'exit': row[14], 'status': row[17]})
-                    total_trades += 1
-                    results.append(row[13])
-                    statuses.append(row[17])
-                    accounts.append(row[10])
-                    symbols.append(row[1])
-                    if o == False:
-                        if row[10] == 'tos':
-                            t_results.append(row[13])   
-                        elif row[10] == 'ibg':
-                            g_results.append(row[13])
-                        else:
-                            b_results.append(row[13]) 
-
-                    if o == False:
-                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[8]), row[10], comm, row[13], row[17], str(row[7]))
-                    else:
-                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8} {9:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], utils.format_price(row[2]), utils.format_price(row[5]))
-                    print(print_row)    
-
-                cur.close()
-                after_comm = (total_profit + total_loss) - total_comm
-                pos_sum = utils.sum_positions(positions)
-                exit_early = utils.sum_exit_early(exits)
-                win_rate = utils.win_rate(results)
-                status_sum = utils.sum_statuses(statuses)
-                acc_sum = utils.sum_accounts(accounts)
-                if o == False:
-                    acc_results = utils.account_results(t_results, g_results, b_results)
-                print('{0:<22} {1:6}'.format('\nGross proft: ', '$' + str(total_profit)))
-                print('{0:<21} {1:6}'.format('Gross loss: ', '$' + str(total_loss)))
-                print('{0:<21} {1:6}'.format('Net proft/loss: ', '$' + str(total_profit + total_loss)))
-                print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
-                print('{0:<21} {1:6}'.format('Final net results: ', '$' + str(after_comm)))   
-                if o == False:
-                    if month == today.month and now_yr == today.year:
-                        open_locked = self.get_locked_open()
-                        if open_locked > 0:
-                            print('-------------')
-                            print('{0:<21} {1:6}'.format('Total open locked: ', '$' + str(open_locked)))
-                            print('{0:<21} {1:6}'.format('Total with open: ', '$' + str(after_comm + open_locked)))
-                print('Note: commissions not exact')
-
-                print('\nTotal trades: ' + str(total_trades))
-                print('Total long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
-                print('Trades exited early: ' + str(exit_early[0]) + ' Good exits: ' + str(exit_early[1]))
-                print('Wins: ' + str(win_rate[0]) + ' Losses: ' + str(win_rate[1]) + ' Win Rate: ' + str(round(win_rate[2], 2)) 
-                    + '%' + ' Average: $' + str(round(win_rate[3], 2)))
-                minimum = '$' + str(win_rate[5]) if win_rate[5] < 0 else 'No losses'
-                print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
-                print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
-                print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2])) 
-                if o == False:
-                    print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
-                    print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
+        rows = self.run_query(query)
+        if rows != False:
+            if o == False:
+                format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8}'.format('ID', 'SYMBOL', 'POS', 'EX:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:DATE')
             else:
-                print('No trades found')
-        except ValueError as e:
-            print('Problem retrieving trades\n' + e)
+                format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8} {9:<8}'.format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:PRICE', 'STOP')
+            print(format_header)
+            total_profit = 0
+            total_loss = 0
+            total_comm = 0
+            positions = []
+            exits = []
+            total_trades = 0
+            results = []
+            statuses = []
+            accounts = []
+            symbols = []
+            t_results = []
+            g_results = []
+            b_results = []
+            for row in rows:
+                if row[13] > 0:
+                    total_profit += row[13]
+                else:
+                    total_loss += row[13]
+
+                total_comm += row[11] + row[12]
+                comm = row[11] + row[12]
+                positions.append(row[4])
+                exits.append({'exit': row[14], 'status': row[17]})
+                total_trades += 1
+                results.append(row[13])
+                statuses.append(row[17])
+                accounts.append(row[10])
+                symbols.append(row[1])
+                if o == False:
+                    if row[10] == 'tos':
+                        t_results.append(row[13])   
+                    elif row[10] == 'ibg':
+                        g_results.append(row[13])
+                    else:
+                        b_results.append(row[13]) 
+
+                if o == False:
+                    print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[8]), row[10], comm, row[13], row[17], str(row[7]))
+                else:
+                    print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8} {9:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], utils.format_price(row[2]), utils.format_price(row[5]))
+                print(print_row)    
+
+            after_comm = (total_profit + total_loss) - total_comm
+            pos_sum = utils.sum_positions(positions)
+            exit_early = utils.sum_exit_early(exits)
+            win_rate = utils.win_rate(results)
+            status_sum = utils.sum_statuses(statuses)
+            acc_sum = utils.sum_accounts(accounts)
+            if o == False:
+                acc_results = utils.account_results(t_results, g_results, b_results)
+            print('{0:<22} {1:6}'.format('\nGross proft: ', '$' + str(total_profit)))
+            print('{0:<21} {1:6}'.format('Gross loss: ', '$' + str(total_loss)))
+            print('{0:<21} {1:6}'.format('Net proft/loss: ', '$' + str(total_profit + total_loss)))
+            print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
+            print('{0:<21} {1:6}'.format('Final net results: ', '$' + str(after_comm)))   
+            if o == False:
+                if month == today.month and now_yr == today.year:
+                    open_locked = self.get_locked_open()
+                    if open_locked > 0:
+                        print('-------------')
+                        print('{0:<21} {1:6}'.format('Total open locked: ', '$' + str(open_locked)))
+                        print('{0:<21} {1:6}'.format('Total with open: ', '$' + str(after_comm + open_locked)))
+            print('Note: commissions not exact')
+
+            print('\nTotal trades: ' + str(total_trades))
+            print('Total long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
+            print('Trades exited early: ' + str(exit_early[0]) + ' Good exits: ' + str(exit_early[1]))
+            print('Wins: ' + str(win_rate[0]) + ' Losses: ' + str(win_rate[1]) + ' Win Rate: ' + str(round(win_rate[2], 2)) 
+                + '%' + ' Average: $' + str(round(win_rate[3], 2)))
+            minimum = '$' + str(win_rate[5]) if win_rate[5] < 0 else 'No losses'
+            print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
+            print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
+            print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2])) 
+            if o == False:
+                print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
+                print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
+        else:
+            print('No trades found')
 
     def view_trades_date(self):
         passed = True
@@ -445,57 +426,41 @@ class TradeLog:
         #start with trades in most recent trading month
         begin = datetime.date.today().replace(day = 1)
         query = "SELECT symbol, notes FROM " + self.table_trades + " WHERE early_exit = 1 AND exit_date >= '" + str(begin) + "' ORDER BY exit_date"
-
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                for row in cur.fetchall():
-                    print(row[0] + ' - ' + row[1])
-                    print('---------------------------------------------')
-            else:
-                print('No trades notes found')
-        except ValueError as e:
-            print('Problem retrieving trades\n' + e)
+        rows = self.run_query(query)
+        if rows != False:
+            for row in rows:
+                print(row[0] + ' - ' + row[1])
+                print('---------------------------------------------')
+        else:
+            print('No trades notes found')
 
     def trade_reasons(self):
         utils.title('Open Trade Reasons')
         #view all current open trades
         query = "SELECT symbol, entry, " + self.table_reasons + " FROM trades WHERE status = 'open' ORDER BY symbol"
-
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                for row in cur.fetchall():
-                    print(row[0] + ' ' + str(utils.format_price(row[1])) + ' ' + row[2])
-                    print('---------------------------------------------')
-            else:
-                print('No open trades found')
-        except ValueError as e:
-            print('Problem retrieving trades\n' + e)
+        rows = self.run_query(query)
+        if rows != False:
+            for row in rows:
+                print(row[0] + ' ' + str(utils.format_price(row[1])) + ' ' + row[2])
+                print('---------------------------------------------')
+        else:
+            print('No open trades found')
 
     def loss_notes(self):
         utils.title('Loss Notes')
         #view for current year
         start = datetime.date.today().replace(day = 1, month = 1)
         query = "SELECT symbol, notes, result FROM " + self.table_trades + " WHERE result < 0 AND status = 'closed' AND exit_date >= '" + str(start) + "'"
-
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                total = 0
-                for row in cur.fetchall():
-                    total += row[2]
-                    print(row[0] + ' - $' + str(row[2]) + ' - ' + row[1])
-                    print('---------------------------------------------')
-
-                print('\nTotal losses: $' + str(total))
-            else:
-                print('No losing trades this month')
-        except ValueError as e:
-            print('Problem retrieving trades\n' + e)
+        rows = self.run_query(query)
+        if rows != False:
+            total = 0
+            for row in rows:
+                total += row[2]
+                print(row[0] + ' - $' + str(row[2]) + ' - ' + row[1])
+                print('---------------------------------------------')
+            print('\nTotal losses: $' + str(total))
+        else:
+            print('No losing trades this month')
 
     def view_days(self):
         utils.title('Days - proft/loss')
@@ -534,22 +499,18 @@ class TradeLog:
         viewing += ' days'
         start = datetime.date.today() - timedelta(days = sel)
         query = "SELECT SUM(result), exit_date FROM " + self.table_trades + " WHERE exit_date >= '" + str(start) + "' GROUP BY exit_date ORDER BY exit_date DESC"
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                total = 0
-                print(viewing + '\n')
-                for row in cur.fetchall():
-                    total += row[0]
-                    print('DATE: ' + str(row[1]) + ' SUM: $' + str(row[0]))
+        rows = self.run_query(query)
+        if rows != False:
+            total = 0
+            print(viewing + '\n')
+            for row in rows:
+                total += row[0]
+                print('DATE: ' + str(row[1]) + ' SUM: $' + str(row[0]))
 
-                print('\nTotal: $' + str(total))
-                print('\nNote: Excludes commissions')
-            else:
-                print('No results')
-        except ValueError as e:
-            print('Problem retrieving data\n' + e)
+            print('\nTotal: $' + str(total))
+            print('\nNote: Excludes commissions')
+        else:
+            print('No results')
 
     def view_trade_by_id(self):
         utils.title('View trade by ID')
@@ -577,33 +538,38 @@ class TradeLog:
 
     def get_locked_open(self):
         query = "SELECT result FROM " + self.table_trades + " WHERE status = 'open' AND result > 0"
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                total = 0
-                for row in cur.fetchall():
-                    total += row[0]
-                return total
-            else:
-                return 0
-        except ValueError as e:
+        rows = self.run_query(query)
+        if rows != False:
+            total = 0
+            for row in rows:
+                total += row[0]
+            return total
+        else:
             return 0
 
     def view_open_ex_dates(self):
         utils.title('Open expiration dates')
         query = "SELECT id, symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00' ORDER BY exp_date"
+        rows = self.run_query(query)
+        if rows != False:
+            for row in rows:
+                print('{0:5} {1:13} {2:12}'.format('ID: ' + str(row[0]), 'SYMBOL: ' + row[1], 'EXPIRES: ' + str(row[2])))
+        else:
+            print('No results')
+        
+    def run_query(self, q, one = False):
         try:
             cur = self.db.cursor()
-            cur.execute(query)
+            cur.execute(q)
             if cur.rowcount > 0:
-                for row in cur.fetchall():
-                    print('{0:5} {1:13} {2:12}'.format('ID: ' + str(row[0]), 'SYMBOL: ' + row[1], 'EXPIRES: ' + str(row[2])))
-            else:
-                print('No results')
+                if one == False:
+                    return cur.fetchall()
+                else:
+                    return cur.fetchone()
+            return False
         except ValueError as e:
-            print('DB Error: ' + e)
-        
+            print('DB error: ' + e)
+            return False
 
 # class end - start running
 
