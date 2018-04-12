@@ -111,11 +111,9 @@ class TradeLog:
         today = datetime.date.today()
         to_show = []
         query = "SELECT symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00'"
-        cur = self.db.cursor()
-        cur.execute(query)
-
-        if cur.rowcount > 0:
-            for row in cur.fetchall():
+        rows = self.run_query(query)
+        if rows != False:
+            for row in rows:
                 if (today - row[1]).days >= -7:
                     to_show.append({'symbol': row[0], 'exp': row[1]})
 
