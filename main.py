@@ -98,12 +98,9 @@ class TradeLog:
     def check_last_rules_viewed(self):
         today = datetime.date.today()
         query = "SELECT viewed_rules FROM " + self.table_actions + " ORDER BY viewed_rules DESC LIMIT 1"
-        cur = self.db.cursor()
-        cur.execute(query)
-        last_viewed = cur.fetchone()
-
-        if last_viewed != None:
-            diff = (today - last_viewed[0]).days
+        row = self.run_query(query, True)
+        if row != False:
+            diff = (today - row[0]).days
             if diff >= 7:
                 print('\nWARNING: It has been ' + str(diff) + ' days since viewing trading rules\n')
 
