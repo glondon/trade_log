@@ -158,16 +158,13 @@ class TradeLog:
         cur.close()
 
     def show_trade_plan(self):
-        begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
-        cur = self.db.cursor()
-        query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= '" + str(begin_week) + "' ORDER BY idea_date DESC"
-        cur.execute(query)
-
         utils.title('Trade ideas')
-
-        if cur.rowcount > 0:
+        begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
+        query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= '" + str(begin_week) + "' ORDER BY idea_date DESC"
+        rows = self.run_query(query)
+        if rows != False:
             to_show = ''
-            for row in cur.fetchall():
+            for row in rows:
                 to_show += str(row[2]) + ' - ' + row[0] + ' - ' + row[1] + '\n'
 
             print(to_show)
