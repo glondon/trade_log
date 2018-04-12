@@ -313,96 +313,91 @@ class TradeLog:
         else:
             query += " WHERE status = 'open' ORDER BY entry_date DESC"
 
-        try:
-            cur = self.db.cursor()
-            cur.execute(query)
-            if cur.rowcount > 0:
-                if o == False:
-                    format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8}'.format('ID', 'SYMBOL', 'POS', 'EX:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:DATE')
-                else:
-                    format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8} {9:<8}'.format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:PRICE', 'STOP')
-                print(format_header)
-                total_profit = 0
-                total_loss = 0
-                total_comm = 0
-                positions = []
-                exits = []
-                total_trades = 0
-                results = []
-                statuses = []
-                accounts = []
-                symbols = []
-                t_results = []
-                g_results = []
-                b_results = []
-                for row in cur.fetchall():
-                    if row[13] > 0:
-                        total_profit += row[13]
-                    else:
-                        total_loss += row[13]
-
-                    total_comm += row[11] + row[12]
-                    comm = row[11] + row[12]
-                    positions.append(row[4])
-                    exits.append({'exit': row[14], 'status': row[17]})
-                    total_trades += 1
-                    results.append(row[13])
-                    statuses.append(row[17])
-                    accounts.append(row[10])
-                    symbols.append(row[1])
-                    if o == False:
-                        if row[10] == 'tos':
-                            t_results.append(row[13])   
-                        elif row[10] == 'ibg':
-                            g_results.append(row[13])
-                        else:
-                            b_results.append(row[13]) 
-
-                    if o == False:
-                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[8]), row[10], comm, row[13], row[17], str(row[7]))
-                    else:
-                        print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8} {9:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], utils.format_price(row[2]), utils.format_price(row[5]))
-                    print(print_row)    
-
-                cur.close()
-                after_comm = (total_profit + total_loss) - total_comm
-                pos_sum = utils.sum_positions(positions)
-                exit_early = utils.sum_exit_early(exits)
-                win_rate = utils.win_rate(results)
-                status_sum = utils.sum_statuses(statuses)
-                acc_sum = utils.sum_accounts(accounts)
-                if o == False:
-                    acc_results = utils.account_results(t_results, g_results, b_results)
-                print('{0:<22} {1:6}'.format('\nGross proft: ', '$' + str(total_profit)))
-                print('{0:<21} {1:6}'.format('Gross loss: ', '$' + str(total_loss)))
-                print('{0:<21} {1:6}'.format('Net proft/loss: ', '$' + str(total_profit + total_loss)))
-                print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
-                print('{0:<21} {1:6}'.format('Final net results: ', '$' + str(after_comm)))   
-                if o == False:
-                    if month == today.month and now_yr == today.year:
-                        open_locked = self.get_locked_open()
-                        if open_locked > 0:
-                            print('-------------')
-                            print('{0:<21} {1:6}'.format('Total open locked: ', '$' + str(open_locked)))
-                            print('{0:<21} {1:6}'.format('Total with open: ', '$' + str(after_comm + open_locked)))
-                print('Note: commissions not exact')
-
-                print('\nTotal trades: ' + str(total_trades))
-                print('Total long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
-                print('Trades exited early: ' + str(exit_early[0]) + ' Good exits: ' + str(exit_early[1]))
-                print('Wins: ' + str(win_rate[0]) + ' Losses: ' + str(win_rate[1]) + ' Win Rate: ' + str(round(win_rate[2], 2)) 
-                    + '%' + ' Average: $' + str(round(win_rate[3], 2)))
-                minimum = '$' + str(win_rate[5]) if win_rate[5] < 0 else 'No losses'
-                print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
-                print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
-                print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2])) 
-                if o == False:
-                    print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
-                    print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
+        rows = self.run_query(query)
+        if rows != False:
+            if o == False:
+                format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8}'.format('ID', 'SYMBOL', 'POS', 'EX:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:DATE')
             else:
-                print('No trades found')
-        except ValueError as e:
-            print('Problem retrieving trades\n' + e)
+                format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8} {9:<8}'.format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:PRICE', 'STOP')
+            print(format_header)
+            total_profit = 0
+            total_loss = 0
+            total_comm = 0
+            positions = []
+            exits = []
+            total_trades = 0
+            results = []
+            statuses = []
+            accounts = []
+            symbols = []
+            t_results = []
+            g_results = []
+            b_results = []
+            for row in rows:
+                if row[13] > 0:
+                    total_profit += row[13]
+                else:
+                    total_loss += row[13]
+
+                total_comm += row[11] + row[12]
+                comm = row[11] + row[12]
+                positions.append(row[4])
+                exits.append({'exit': row[14], 'status': row[17]})
+                total_trades += 1
+                results.append(row[13])
+                statuses.append(row[17])
+                accounts.append(row[10])
+                symbols.append(row[1])
+                if o == False:
+                    if row[10] == 'tos':
+                        t_results.append(row[13])   
+                    elif row[10] == 'ibg':
+                        g_results.append(row[13])
+                    else:
+                        b_results.append(row[13]) 
+
+                if o == False:
+                    print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[8]), row[10], comm, row[13], row[17], str(row[7]))
+                else:
+                    print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8} {9:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], utils.format_price(row[2]), utils.format_price(row[5]))
+                print(print_row)    
+
+            after_comm = (total_profit + total_loss) - total_comm
+            pos_sum = utils.sum_positions(positions)
+            exit_early = utils.sum_exit_early(exits)
+            win_rate = utils.win_rate(results)
+            status_sum = utils.sum_statuses(statuses)
+            acc_sum = utils.sum_accounts(accounts)
+            if o == False:
+                acc_results = utils.account_results(t_results, g_results, b_results)
+            print('{0:<22} {1:6}'.format('\nGross proft: ', '$' + str(total_profit)))
+            print('{0:<21} {1:6}'.format('Gross loss: ', '$' + str(total_loss)))
+            print('{0:<21} {1:6}'.format('Net proft/loss: ', '$' + str(total_profit + total_loss)))
+            print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
+            print('{0:<21} {1:6}'.format('Final net results: ', '$' + str(after_comm)))   
+            if o == False:
+                if month == today.month and now_yr == today.year:
+                    open_locked = self.get_locked_open()
+                    if open_locked > 0:
+                        print('-------------')
+                        print('{0:<21} {1:6}'.format('Total open locked: ', '$' + str(open_locked)))
+                        print('{0:<21} {1:6}'.format('Total with open: ', '$' + str(after_comm + open_locked)))
+            print('Note: commissions not exact')
+
+            print('\nTotal trades: ' + str(total_trades))
+            print('Total long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
+            print('Trades exited early: ' + str(exit_early[0]) + ' Good exits: ' + str(exit_early[1]))
+            print('Wins: ' + str(win_rate[0]) + ' Losses: ' + str(win_rate[1]) + ' Win Rate: ' + str(round(win_rate[2], 2)) 
+                + '%' + ' Average: $' + str(round(win_rate[3], 2)))
+            minimum = '$' + str(win_rate[5]) if win_rate[5] < 0 else 'No losses'
+            print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
+            print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
+            print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2])) 
+            if o == False:
+                print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
+                print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
+        else:
+            print('No trades found')
 
     def view_trades_date(self):
         passed = True
