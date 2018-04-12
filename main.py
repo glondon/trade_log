@@ -135,27 +135,25 @@ class TradeLog:
 
 
     def show_watchlist(self):
-        cur = self.db.cursor()
-        cur.execute("SELECT ticker FROM " + self.table_watchlist + " ORDER BY ticker")
-
         utils.title('Watchlist')
+        query = "SELECT ticker FROM " + self.table_watchlist + " ORDER BY ticker"
+        rows = self.run_query(query)
+        if rows != False:
+            watchlist = ''
+            total = 0
+            for i, row in enumerate(rows):
+                total += 1
+                if i == len(rows) - 1:
+                    watchlist += row[0]
+                elif i % 10 == 0:
+                    watchlist += '\n'
+                else:
+                    watchlist += row[0] + ', '
 
-        watchlist = ''
-        result = cur.fetchall()
-        total = 0
-        for i, row in enumerate(result):
-            total += 1
-            if i == len(result) - 1:
-                watchlist += row[0]
-            elif i % 10 == 0:
-                watchlist += '\n'
-            else:
-                watchlist += row[0] + ', '
-
-        print(watchlist)
-        print('\nTotal watchlist items: ' + str(total))
-
-        cur.close()
+            print(watchlist)
+            print('\nTotal watchlist items: ' + str(total))
+        else:
+            print('None found')
 
     def show_trade_plan(self):
         utils.title('Trade ideas')
