@@ -601,7 +601,7 @@ options = {
 }
 
 while True:
-    option = input('Choose option\n')
+    option = input('\nChoose option (6 => menu)\n')
     entered = utils.validate_int(option)
 
     if(entered != False):
