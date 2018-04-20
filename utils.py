@@ -69,7 +69,7 @@ def win_rate(values):
     else:
         win_rate = float(0)
 
-    if sum > 0 and counter > 0:
+    if counter > 0:
         avg = sum / counter
     else:
         avg = float(0)
