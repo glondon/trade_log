@@ -43,7 +43,8 @@ class TradeLog:
             '15. View notes on losing trades',
             '16. View days profit/loss',
             '17. View trade by ID',
-            '18. View open expiration dates'
+            '18. View open expiration dates',
+            '19. View profit/loss by symbol'
         ]
 
         for item in menu_list:
@@ -571,6 +572,9 @@ class TradeLog:
             print('DB error: ' + e)
             return False
 
+    def results_by_symbol(self):
+        pass
+
 # class end - start running
 
 t = TradeLog()
@@ -597,7 +601,8 @@ options = {
     15 : t.loss_notes,
     16 : t.view_days,
     17 : t.view_trade_by_id,
-    18 : t.view_open_ex_dates
+    18 : t.view_open_ex_dates,
+    19 : t.results_by_symbol
 }
 
 while True:
