@@ -573,7 +573,20 @@ class TradeLog:
             return False
 
     def results_by_symbol(self):
-        pass
+        utils.title('Results by Symbol')
+        symbol = input('Enter symbol: ')
+        #show all initially - add date range later
+        symbol = symbol.upper()
+        q = "SELECT result FROM " + self.table_trades + " WHERE symbol = '" + symbol + "'"
+        r = self.run_query(q)
+        if r != False:
+            t = 0
+            for row in r:
+                t += row[0]
+
+            print('\nResult for symbol ' + symbol + ': $' + str(t))
+        else:
+            print('\nNo results for symbol: ' + symbol)
 
 # class end - start running
 
