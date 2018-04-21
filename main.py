@@ -581,10 +581,18 @@ class TradeLog:
         r = self.run_query(q)
         if r != False:
             t = 0
+            t_p = 0
+            t_l = 0
             for row in r:
-                t += row[0]
+                if row[0] > 0:
+                    t_p += row[0]
+                else:
+                    t_l += row[0]
 
-            print('\nResult for symbol ' + symbol + ': $' + str(t))
+            t = t_p + t_l
+            print('\nGross proft: $' + str(t_p))
+            print('Gross loss: $' + str(t_l))
+            print('Net result for symbol ' + symbol + ': $' + str(t))
         else:
             print('\nNo results for symbol: ' + symbol)
 
