@@ -577,7 +577,7 @@ class TradeLog:
         symbol = input('Enter symbol: ')
         #show all initially - add date range later
         symbol = symbol.upper()
-        q = "SELECT result, exit_date FROM " + self.table_trades + " WHERE symbol = '" + symbol + "' ORDER BY exit_date DESC"
+        q = "SELECT result, exit_date FROM " + self.table_trades + " WHERE symbol = '" + symbol + "' AND status = 'closed' ORDER BY exit_date DESC"
         r = self.run_query(q)
         if r != False:
             t = 0
