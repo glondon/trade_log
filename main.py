@@ -577,20 +577,28 @@ class TradeLog:
         symbol = input('Enter symbol: ')
         #show all initially - add date range later
         symbol = symbol.upper()
-        q = "SELECT result FROM " + self.table_trades + " WHERE symbol = '" + symbol + "'"
+        q = "SELECT result, exit_date FROM " + self.table_trades + " WHERE symbol = '" + symbol + "' ORDER BY exit_date DESC"
         r = self.run_query(q)
         if r != False:
             t = 0
             t_p = 0
             t_l = 0
+            ps = ''
+            ls = ''
             for row in r:
                 if row[0] > 0:
                     t_p += row[0]
+                    ps += str(row[1]) + ' - $' + str(row[0]) + '\n'
                 else:
                     t_l += row[0]
+                    ls += str(row[1]) + ' - $' + str(row[0]) + '\n'
 
             t = t_p + t_l
-            print('\nGross proft: $' + str(t_p))
+            print('\nWon \n')
+            print(ps)
+            print('Lossed\n')
+            print(ls)
+            print('Gross proft: $' + str(t_p))
             print('Gross loss: $' + str(t_l))
             print('Net result for symbol ' + symbol + ': $' + str(t))
         else:
