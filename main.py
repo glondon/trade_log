@@ -599,7 +599,7 @@ class TradeLog:
         symbol = symbol.upper()
         q = "SELECT result, exit_date FROM " + self.table_trades + " WHERE symbol = '" + symbol + "' AND status = 'closed'"
         if show_range:
-            print('Viewing ' + utils.get_month(m) + ' results')
+            print('\nViewing ' + utils.get_month(m) + ' results')
             q += " AND exit_date >= '" + str(begin) + "' AND exit_date <= '" + str(end) + "'"
         q += " ORDER BY exit_date DESC"
     
