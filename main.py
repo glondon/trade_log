@@ -588,7 +588,7 @@ class TradeLog:
                         begin = datetime.date.today().replace(month = m, day = 1)
                         end = datetime.date.today().replace(month = m + 1, day = 1) - datetime.timedelta(days = 1)
                     else:
-                        print(m + ' month out of range')
+                        print(str(m) + ' month out of range')
                         return
                 else:
                     print(m + ' not a valid month integer')
