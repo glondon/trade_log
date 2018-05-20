@@ -575,9 +575,34 @@ class TradeLog:
     def results_by_symbol(self):
         utils.title('Results by Symbol')
         symbol = input('Enter symbol: ')
-        #show all initially - add date range later
+        opt = ['y', 'n']
+        show_range = False
+        range = input('Show by month? (y or n)')
+        if range.lower() in opt:
+            if range.lower() == 'y':
+                m = input('Enter month (1,2,etc)')
+                m = utils.validate_int(m)
+                if m != False:
+                    if utils.month_check(m):
+                        show_range = True
+                        begin = datetime.date.today().replace(month = m, day = 1)
+                        end = datetime.date.today().replace(month = m + 1, day = 1) - datetime.timedelta(days = 1)
+                    else:
+                        print(str(m) + ' month out of range')
+                        return
+                else:
+                    print(m + ' not a valid month integer')
+        else:
+            print(range + ' Invalid option')
+            return
+
         symbol = symbol.upper()
-        q = "SELECT result, exit_date FROM " + self.table_trades + " WHERE symbol = '" + symbol + "' AND status = 'closed' ORDER BY exit_date DESC"
+        q = "SELECT result, exit_date FROM " + self.table_trades + " WHERE symbol = '" + symbol + "' AND status = 'closed'"
+        if show_range:
+            print('\nViewing ' + utils.get_month(m) + ' results')
+            q += " AND exit_date >= '" + str(begin) + "' AND exit_date <= '" + str(end) + "'"
+        q += " ORDER BY exit_date DESC"
+    
         r = self.run_query(q)
         if r != False:
             t = 0
