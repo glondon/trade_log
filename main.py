@@ -583,7 +583,7 @@ class TradeLog:
                 m = input('Enter month (1,2,etc)')
                 m = utils.validate_int(m)
                 if m != False:
-                    if m > 0 and m <= 12:
+                    if utils.month_check(m):
                         show_range = True
                         begin = datetime.date.today().replace(month = m, day = 1)
                         end = datetime.date.today().replace(month = m + 1, day = 1) - datetime.timedelta(days = 1)
