@@ -135,10 +135,12 @@ class TradeLog:
             total = 0
             for i, row in enumerate(rows):
                 total += 1
-                if i == len(rows) - 1:
+                if i == 0:
+                    watchlist += row[0] + ', '
+                elif i == len(rows) - 1:
                     watchlist += row[0]
                 elif i % 10 == 0:
-                    watchlist += '\n'
+                    watchlist += row[0] + '\n'
                 else:
                     watchlist += row[0] + ', '
 
