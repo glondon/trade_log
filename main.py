@@ -639,9 +639,13 @@ class TradeLog:
         else:
             print('\nNo results for symbol: ' + symbol)
 
-        def ib_minimums(self):
-            #showing for current month only
-            utils.title('IB Minimums')
+    def ib_minimums(self):
+        #showing for current month only
+        utils.title('IB Minimums')
+        t = datetime.date.today().replace(day = 1)
+        q = "SELECT entry_comm, exit_comm, account FROM " + self.table_trades + " WHERE entry_date >= '" + str(t) + "' AND (account = 'ibg' OR account = 'ibc')"
+        r = self.run_query(q)
+        
 
 # class end - start running
 
