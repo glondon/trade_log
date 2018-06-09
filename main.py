@@ -383,7 +383,6 @@ class TradeLog:
             print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
             print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2])) 
             if o == False:
-                print('IB Minimums diff (10 per month) IBG: ' + str(10 - acc_sum[1]) + ' IBC: ' + str(10 - acc_sum[2]))
                 print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
                 print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
         else:
@@ -638,6 +637,33 @@ class TradeLog:
         else:
             print('\nNo results for symbol: ' + symbol)
 
+    def ib_minimums(self):
+        t = datetime.date.today().replace(day = 1)
+        c = utils.get_month(t.month)
+        q = "SELECT entry_comm, exit_comm, account FROM " + self.table_trades + " WHERE entry_date >= '" + str(t) + "' AND (account = 'ibg' OR account = 'ibc')"
+        r = self.run_query(q)
+        if r != False:
+            g_en = 0
+            g_ex = 0
+            b_en = 0
+            b_ex = 0
+            max = 10
+            for row in r:
+                if row[2] == 'ibg':
+                    g_en += row[0]
+                    g_ex += row[1]
+                else:
+                    b_en += row[0]
+                    b_ex += row[1]
+
+            t_g = g_en + g_ex
+            t_b = b_en + b_ex
+            if t_g < max:
+                print('IBG minimum not met yet for ' + c + ', so far about: $' + str(t_g))
+            if t_b < max:
+                print('IBC minimum not met yet for ' + c + ', so far about: $' + str(t_b))
+        
+
 # class end - start running
 
 t = TradeLog()
@@ -647,6 +673,7 @@ print('\n--------\n')
 t.check_last_rules_viewed()
 t.check_expirations()
 t.check_exit_date_open()
+t.ib_minimums()
 
 options = {
     1 : t.view_trades,
