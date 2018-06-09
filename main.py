@@ -383,7 +383,6 @@ class TradeLog:
             print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
             print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2])) 
             if o == False:
-                print('IB Minimums diff (10 per month) IBG: ' + str(10 - acc_sum[1]) + ' IBC: ' + str(10 - acc_sum[2]))
                 print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
                 print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
         else:
