@@ -44,7 +44,8 @@ class TradeLog:
             '16. View days profit/loss',
             '17. View trade by ID',
             '18. View open expiration dates',
-            '19. View profit/loss by symbol'
+            '19. View profit/loss by symbol',
+            '20. View current IB minimums'
         ]
 
         for item in menu_list:
@@ -638,6 +639,10 @@ class TradeLog:
         else:
             print('\nNo results for symbol: ' + symbol)
 
+        def ib_minimums(self):
+            #showing for current month only
+            utils.title('IB Minimums')
+
 # class end - start running
 
 t = TradeLog()
@@ -665,7 +670,8 @@ options = {
     16 : t.view_days,
     17 : t.view_trade_by_id,
     18 : t.view_open_ex_dates,
-    19 : t.results_by_symbol
+    19 : t.results_by_symbol,
+    20 : t.ib_minimums
 }
 
 while True:
