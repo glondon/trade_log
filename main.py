@@ -44,8 +44,7 @@ class TradeLog:
             '16. View days profit/loss',
             '17. View trade by ID',
             '18. View open expiration dates',
-            '19. View profit/loss by symbol',
-            '20. View current IB minimums'
+            '19. View profit/loss by symbol'
         ]
 
         for item in menu_list:
@@ -640,11 +639,30 @@ class TradeLog:
             print('\nNo results for symbol: ' + symbol)
 
     def ib_minimums(self):
-        #showing for current month only
-        utils.title('IB Minimums')
         t = datetime.date.today().replace(day = 1)
+        c = utils.get_month(t.month)
         q = "SELECT entry_comm, exit_comm, account FROM " + self.table_trades + " WHERE entry_date >= '" + str(t) + "' AND (account = 'ibg' OR account = 'ibc')"
         r = self.run_query(q)
+        if r != False:
+            g_en = 0
+            g_ex = 0
+            b_en = 0
+            b_ex = 0
+            max = 10
+            for row in r:
+                if row[2] == 'ibg':
+                    g_en += row[0]
+                    g_ex += row[1]
+                else:
+                    b_en += row[0]
+                    b_ex += row[1]
+
+            t_g = g_en + g_ex
+            t_b = b_en + b_ex
+            if t_g < max:
+                print('IBG minimum not met yet for ' + c + ', so far about: $' + str(t_g))
+            if t_b < max:
+                print('IBC minimum not met yet for ' + c + ', so far about: $' + str(t_b))
         
 
 # class end - start running
@@ -656,6 +674,7 @@ print('\n--------\n')
 t.check_last_rules_viewed()
 t.check_expirations()
 t.check_exit_date_open()
+t.ib_minimums()
 
 options = {
     1 : t.view_trades,
@@ -674,8 +693,7 @@ options = {
     16 : t.view_days,
     17 : t.view_trade_by_id,
     18 : t.view_open_ex_dates,
-    19 : t.results_by_symbol,
-    20 : t.ib_minimums
+    19 : t.results_by_symbol
 }
 
 while True:
