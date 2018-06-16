@@ -640,7 +640,7 @@ class TradeLog:
     def ib_minimums(self):
         t = datetime.date.today().replace(day = 1)
         c = utils.get_month(t.month)
-        q = "SELECT entry_comm, exit_comm, account FROM " + self.table_trades + " WHERE entry_date >= '" + str(t) + "' AND (account = 'ibg' OR account = 'ibc')"
+        q = "SELECT entry_comm, exit_comm, entry_date, exit_date, account FROM " + self.table_trades + " WHERE (entry_date >= '" + str(t) + "' OR exit_date >= '" + str(t) + "') AND (account = 'ibg' OR account = 'ibc')"
         r = self.run_query(q)
         if r != False:
             g_en = 0
@@ -649,12 +649,20 @@ class TradeLog:
             b_ex = 0
             max = 10
             for row in r:
-                if row[2] == 'ibg':
-                    g_en += row[0]
-                    g_ex += row[1]
+                if row[4] == 'ibg':
+                    if row[2] != None:
+                        if row[2].strftime('%Y-%m-%d') >= str(t):
+                            g_en += row[0]
+                    if row[3] != None:
+                        if row[3].strftime('%Y-%m-%d') >= str(t):
+                            g_ex += row[1]
                 else:
-                    b_en += row[0]
-                    b_ex += row[1]
+                    if row[2] != None:
+                        if row[2].strftime('%Y-%m-%d') >= str(t):
+                            b_en += row[0]
+                    if row[3] != None:
+                        if row[3].strftime('%Y-%m-%d') >= str(t):
+                            b_ex += row[1]
 
             t_g = g_en + g_ex
             t_b = b_en + b_ex
