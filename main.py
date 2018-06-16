@@ -53,7 +53,7 @@ class TradeLog:
     def show_rules(self):
         utils.title('Trading Rules')
         with self.db.cursor() as cur:
-            cur.execute("SELECT rule FROM " + self.table_rules + " ORDER BY rule DESC")
+            cur.execute("SELECT rule FROM " + self.table_rules + " ORDER BY RAND()")
             counter = 1
             print('Press ENTER to continue viewing each trading rule & "q" to quit\n')
             for row in cur.fetchall():
