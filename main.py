@@ -640,13 +640,15 @@ class TradeLog:
     def ib_minimums(self):
         t = datetime.date.today().replace(day = 1)
         c = utils.get_month(t.month)
-        q = "SELECT entry_comm, exit_comm, entry_date, exit_date, account FROM " + self.table_trades + " WHERE (entry_date >= '" + str(t) + "' OR exit_date >= '" + str(t) + "') AND (account = 'ibg' OR account = 'ibc')"
+        q = "SELECT entry_comm, exit_comm, entry_date, exit_date, account FROM " + self.table_trades + " WHERE (entry_date >= '" + str(t) + "' OR exit_date >= '" + str(t) + "')"
         r = self.run_query(q)
         if r != False:
             g_en = 0
             g_ex = 0
             b_en = 0
             b_ex = 0
+            t_en = 0
+            t_ex = 0
             max = 10
             for row in r:
                 if row[4] == 'ibg':
@@ -656,20 +658,36 @@ class TradeLog:
                     if row[3] != None:
                         if row[3].strftime('%Y-%m-%d') >= str(t):
                             g_ex += row[1]
-                else:
+                elif row[4] == 'ibc':
                     if row[2] != None:
                         if row[2].strftime('%Y-%m-%d') >= str(t):
                             b_en += row[0]
                     if row[3] != None:
                         if row[3].strftime('%Y-%m-%d') >= str(t):
                             b_ex += row[1]
+                else:
+                    if row[2] != None:
+                        if row[2].strftime('%Y-%m-%d') >= str(t):
+                            t_en += row[0]
+                    if row[3] != None:
+                        if row[3].strftime('%Y-%m-%d') >= str(t):
+                            t_ex += row[1]
 
             t_g = g_en + g_ex
             t_b = b_en + b_ex
+            t_t = t_en + t_ex
             if t_g < max:
                 print('IBG minimum not met yet for ' + c + ', so far about: $' + str(t_g))
+            else:
+                print('IBG commissions: ' + str(t_g))
             if t_b < max:
                 print('IBC minimum not met yet for ' + c + ', so far about: $' + str(t_b))
+            else:
+                print('IBC commissions: ' + str(t_b))
+            if t_t < max:
+                print('TOS minimum not met yet for ' + c + ', so far about: $' + str(t_t))
+            else:
+                print('TOS commissions: ' + str(t_t))
         
 
 # class end - start running
