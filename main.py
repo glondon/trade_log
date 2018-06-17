@@ -679,15 +679,15 @@ class TradeLog:
             if t_g < max:
                 print('IBG minimum not met yet for ' + c + ', so far about: $' + str(t_g))
             else:
-                print('IBG commissions: ' + str(t_g))
+                print('IBG ' + c + ' commissions: $' + str(t_g))
             if t_b < max:
                 print('IBC minimum not met yet for ' + c + ', so far about: $' + str(t_b))
             else:
-                print('IBC commissions: ' + str(t_b))
+                print('IBC ' + c + ' commissions: $' + str(t_b))
             if t_t < max:
                 print('TOS minimum not met yet for ' + c + ', so far about: $' + str(t_t))
             else:
-                print('TOS commissions: ' + str(t_t))
+                print('TOS ' + c + ' commissions: $' + str(t_t))
         
 
 # class end - start running
