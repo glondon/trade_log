@@ -688,6 +688,8 @@ class TradeLog:
                 print('TOS minimum not met yet for ' + c + ', so far about: $' + str(t_t))
             else:
                 print('TOS ' + c + ' commissions: $' + str(t_t))
+
+            print('Total spent: $' + str(t_g + t_b + t_t))
         
 
 # class end - start running
