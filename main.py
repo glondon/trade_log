@@ -390,6 +390,7 @@ class TradeLog:
 
     def view_trades_date(self):
         passed = True
+        inc_day = False
         month = input('Enter a month (1-12)\n')
         year = input('Enter a year (2017-2018)\n')
         m_o = input("View only selected month's range? (y/n)\n")
@@ -414,18 +415,21 @@ class TradeLog:
 
         if m_o.lower() in month_options:
             if m_o.lower() == 'n':
-                d_o = input('Enter a day (1-31)\n')
+                day = input('Enter a day (1-31)\n')
+                c_d = utils.validate_int(day)
                 if c_d != False:
-                    c_d = d_0
+                    inc_day = True
                 else
-                print('Invald day integer entered')
-                passed = False
+                    print('Invald day integer entered')
+                    passed = False
 
         else:
             passed = False
             print('Month option must by y or n')
 
-        if passed:
+        if passed and inc_day:
+            self.view_trades(c_m, c_y, False, m_o, c_d)
+        else:
             self.view_trades(c_m, c_y, False, m_o)
 
     def view_open(self):
