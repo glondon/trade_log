@@ -413,7 +413,14 @@ class TradeLog:
             print('Invalid year integer entered')
 
         if m_o.lower() in month_options:
-            pass
+            if m_o.lower() == 'n':
+                d_o = input('Enter a day (1-31)\n')
+                if c_d != False:
+                    c_d = d_0
+                else
+                print('Invald day integer entered')
+                passed = False
+
         else:
             passed = False
             print('Month option must by y or n')
