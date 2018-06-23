@@ -171,8 +171,8 @@ def year_check(y):
         return False
 
 def day_check(d):
-    if d < 0 or d > 31
+    if d < 0 or d > 31:
         return False
-    else
+    else:
         return True
         

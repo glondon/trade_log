@@ -419,7 +419,7 @@ class TradeLog:
                 c_d = utils.validate_int(day)
                 if c_d != False:
                     inc_day = True
-                else
+                else:
                     print('Invald day integer entered')
                     passed = False
 
