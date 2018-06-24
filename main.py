@@ -254,7 +254,7 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def view_trades(self, month = False, year = False, o = False, m = False):
+    def view_trades(self, month = False, year = False, day = False, o = False, m_opt = False):
         today = datetime.datetime.today()
         now_yr = today.year
         if month == False:
@@ -269,10 +269,10 @@ class TradeLog:
         else:
             print('Month Start: ' + utils.get_month(month) + ' ' + str(year) + '\n')
 
-        if m == False:
+        if m_opt == False:
             pass
         else:
-            if m == 'y':
+            if m_opt == 'y':
                 if month != 12:
                     to_m = month + 1
                     to_y = year
@@ -280,10 +280,18 @@ class TradeLog:
                     to_m = 1
                     to_y = year + 1
                 print('Viewing ' + utils.get_month(month) + ' only\n')
-                end = datetime.date.today().replace(month = to_m, day = 1, year = to_y) - datetime.timedelta(days = 1)
 
-        if year == False:
+        if year == False and day == False:
+            end = datetime.date.today().replace(month = to_m, day = 1) - datetime.timedelta(days = 1)
+        elif year == False and day != False:
+            end = datetime.date.today().replace(month = to_m, day = day, year = to_y) - datetime.timedelta(days = 1)
+        else:
+            end = datetime.date.today().replace(month = to_m, day = day, year = to_y)
+
+        if year == False and day == False:
             begin = datetime.date.today().replace(month = month, day = 1)
+        elif year == False and day != False:
+            begin = datetime.date.today().replace(month = month, day = day)
         else:
             begin = datetime.date.today().replace(month = month, day = 1, year = year)
         
@@ -294,8 +302,7 @@ class TradeLog:
             if m == False:
                 pass
             else:
-                if m == 'y':
-                    query += " AND exit_date <= '" + str(end) + "'"
+                query += " AND exit_date <= '" + str(end) + "'"
 
             query += " ORDER BY exit_date DESC"
             
@@ -428,12 +435,12 @@ class TradeLog:
             print('Month option must by y or n')
 
         if passed and inc_day:
-            self.view_trades(c_m, c_y, False, m_o, c_d)
+            self.view_trades(c_m, c_y, c_d, False, m_o)
         else:
-            self.view_trades(c_m, c_y, False, m_o)
+            self.view_trades(c_m, c_y, False, False, m_o)
 
     def view_open(self):
-        self.view_trades(False, False, True)
+        self.view_trades(False, False, False, True)
 
     def view_exit_notes(self):
         utils.title('Early Exit Notes')
