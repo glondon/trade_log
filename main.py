@@ -273,7 +273,8 @@ class TradeLog:
             print('Month Start: ' + utils.get_month(month) + ' ' + str(year) + '\n')
 
         if m_opt == False:
-            pass
+            to_m = month
+            to_y = year
         else:
             if m_opt == 'y':
                 if month != 12:
