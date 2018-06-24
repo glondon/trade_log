@@ -259,8 +259,9 @@ class TradeLog:
         now_yr = today.year
         if month == False:
             month = today.month
-        if day == False:
-            day = 1
+        to_d = 1
+        if day != False:
+            to_d = day
 
         title = 'Viewing closed trades' if o == False else 'Viewing current open trades'
 
@@ -288,14 +289,14 @@ class TradeLog:
             print('Viewing ' + utils.get_month(month) + ' only\n')
 
         if year == False:
-            end = datetime.date.today().replace(month = to_m, day = day) - datetime.timedelta(days = 1)
+            end = datetime.date.today().replace(month = to_m, day = to_d) - datetime.timedelta(days = 1)
         else:
-            end = datetime.date.today().replace(month = to_m, day = day, year = to_y)
+            end = datetime.date.today().replace(month = to_m, day = to_d, year = to_y)
 
         if year == False:
-            begin = datetime.date.today().replace(month = month, day = day)
+            begin = datetime.date.today().replace(month = month, day = to_d)
         else:
-            begin = datetime.date.today().replace(month = month, day = day, year = year)
+            begin = datetime.date.today().replace(month = month, day = to_d, year = year)
         
         query = "SELECT * FROM " + self.table_trades
 
@@ -316,8 +317,6 @@ class TradeLog:
             
         else:
             query += " WHERE status = 'open' ORDER BY entry_date DESC"
-
-        pprint(query)
 
         rows = self.run_query(query)
         if rows != False:
