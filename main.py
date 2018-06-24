@@ -259,6 +259,8 @@ class TradeLog:
         now_yr = today.year
         if month == False:
             month = today.month
+        if day == False:
+            day = 1
 
         title = 'Viewing closed trades' if o == False else 'Viewing current open trades'
 
@@ -279,27 +281,27 @@ class TradeLog:
                 else:
                     to_m = 1
                     to_y = year + 1
-                print('Viewing ' + utils.get_month(month) + ' only\n')
+            else:
+                to_m = month
+                to_y = year
+            
+            print('Viewing ' + utils.get_month(month) + ' only\n')
 
-        if year == False and day == False:
-            end = datetime.date.today().replace(month = to_m, day = 1) - datetime.timedelta(days = 1)
-        elif year == False and day != False:
-            end = datetime.date.today().replace(month = to_m, day = day, year = to_y) - datetime.timedelta(days = 1)
+        if year == False:
+            end = datetime.date.today().replace(month = to_m, day = day) - datetime.timedelta(days = 1)
         else:
             end = datetime.date.today().replace(month = to_m, day = day, year = to_y)
 
-        if year == False and day == False:
-            begin = datetime.date.today().replace(month = month, day = 1)
-        elif year == False and day != False:
+        if year == False:
             begin = datetime.date.today().replace(month = month, day = day)
         else:
-            begin = datetime.date.today().replace(month = month, day = 1, year = year)
+            begin = datetime.date.today().replace(month = month, day = day, year = year)
         
         query = "SELECT * FROM " + self.table_trades
 
         if o == False:
             query += " WHERE exit_date >= '" + str(begin) + "'"
-            if m == False:
+            if m_opt == False:
                 pass
             else:
                 query += " AND exit_date <= '" + str(end) + "'"
