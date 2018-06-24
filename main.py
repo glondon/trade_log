@@ -300,16 +300,24 @@ class TradeLog:
         query = "SELECT * FROM " + self.table_trades
 
         if o == False:
-            query += " WHERE exit_date >= '" + str(begin) + "'"
+            if day == False:
+                query += " WHERE exit_date >= '" + str(begin) + "'"
+            else:
+                query += " WHERE entry_date = '" + str(begin) + "'"
             if m_opt == False:
                 pass
             else:
-                query += " AND exit_date <= '" + str(end) + "'"
+                if day == False:
+                    query += " AND exit_date <= '" + str(end) + "'"
+                else:
+                    query += " OR exit_date = '" + str(end) + "'"
 
             query += " ORDER BY exit_date DESC"
             
         else:
             query += " WHERE status = 'open' ORDER BY entry_date DESC"
+
+        pprint(query)
 
         rows = self.run_query(query)
         if rows != False:
