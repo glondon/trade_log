@@ -117,6 +117,7 @@ class TradeLog:
                 print('The following option trades are expiring soon:')
                 for row in to_show:
                     print(row.get('symbol') + ' - ' + str(row.get('exp')))
+                print()
 
     def check_exit_date_open(self):
         query = "SELECT id, symbol FROM " + self.table_trades + " WHERE status = 'open' AND exit_date > '0000-00-00'"
