@@ -488,6 +488,7 @@ class TradeLog:
                 m = utils.validate_int(m_opt)
                 if m != False:
                     if utils.month_check(m):
+                        print('Viewing ' + utils.get_month(m) + ' losses\n')
                         start = datetime.date.today().replace(day = 1, month = m)
                     else:
                         print('Month out of range\n')
