@@ -480,8 +480,27 @@ class TradeLog:
 
     def loss_notes(self):
         utils.title('Loss Notes')
-        #view for current year
-        start = datetime.date.today().replace(day = 1, month = 1)
+        opts = ['y', 'n']
+        opt = input('View specific month for current year? (y or n):\n')
+        if opt.lower() in opts:
+            if opt.lower() == 'y':
+                m_opt = input('Enter month (1-12):\n')
+                m = utils.validate_int(m_opt)
+                if m != False:
+                    if utils.month_check(m):
+                        start = datetime.date.today().replace(day = 1, month = m)
+                    else:
+                        print('Month out of range\n')
+                        return
+                else:
+                    print('Invalid month\n')
+                    return
+            else:
+                start = datetime.date.today().replace(day = 1, month = 1)
+        else:
+            print('Invalid option\n')
+            return
+
         query = "SELECT symbol, notes, result FROM " + self.table_trades + " WHERE result < 0 AND status = 'closed' AND exit_date >= '" + str(start) + "'"
         rows = self.run_query(query)
         if rows != False:
