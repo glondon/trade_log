@@ -488,7 +488,7 @@ class TradeLog:
             total = 0
             for row in rows:
                 total += row[2]
-                print(row[0] + ' - $' + str(row[2]) + ' - ' + row[1])
+                print(row[0] + ' - $' + str(row[2]) + ' - ' + str(row[1]))
                 print('---------------------------------------------')
             print('\nTotal losses: $' + str(total))
         else:
