@@ -158,7 +158,7 @@ def account_results(t_vals, g_vals, b_vals):
     return [t, g, b]
 
 def month_check(m):
-    if m >= 1 or m <= 12:
+    if m >= 1 and m <= 12:
         return True
     else:
         return False
