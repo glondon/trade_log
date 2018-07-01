@@ -293,7 +293,7 @@ class TradeLog:
         if year == False:
             end = datetime.date.today().replace(month = to_m, day = to_d) - datetime.timedelta(days = 1)
         else:
-            end = datetime.date.today().replace(month = to_m, day = to_d, year = to_y)
+            end = datetime.date.today().replace(month = to_m, day = to_d, year = to_y) - datetime.timedelta(days = 1)
 
         if year == False:
             begin = datetime.date.today().replace(month = month, day = to_d)
