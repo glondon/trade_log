@@ -290,10 +290,12 @@ class TradeLog:
             
             print('Viewing ' + utils.get_month(month) + ' only\n')
 
-        if year == False:
+        if year == False and day == False:
             end = datetime.date.today().replace(month = to_m, day = to_d) - datetime.timedelta(days = 1)
-        else:
+        elif year == False and to_d == 1:
             end = datetime.date.today().replace(month = to_m, day = to_d, year = to_y) - datetime.timedelta(days = 1)
+        else:
+            end = datetime.date.today().replace(month = to_m, day = to_d, year = to_y)
 
         if year == False:
             begin = datetime.date.today().replace(month = month, day = to_d)
@@ -419,17 +421,19 @@ class TradeLog:
 
         if c_m != False:
             if not utils.month_check(c_m):
-                passed = False
                 print('Invalid month entered')
+                return
         else:
             print('Invalid month integer entered')
+            return
 
         if c_y != False:
             if not utils.year_check(c_y):
-                passed = False
                 print('Invalid year entered')
+                return
         else:
             print('Invalid year integer entered')
+            return
 
         if m_o.lower() in month_options:
             if m_o.lower() == 'n':
@@ -439,13 +443,13 @@ class TradeLog:
                     inc_day = True
                 else:
                     print('Invald day integer entered')
-                    passed = False
+                    return
 
         else:
-            passed = False
             print('Month option must by y or n')
+            return
 
-        if passed and inc_day:
+        if inc_day:
             self.view_trades(c_m, c_y, c_d, False, m_o)
         else:
             self.view_trades(c_m, c_y, False, False, m_o)
