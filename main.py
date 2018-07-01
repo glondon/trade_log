@@ -290,10 +290,8 @@ class TradeLog:
             
             print('Viewing ' + utils.get_month(month) + ' only\n')
 
-        if year == False and day == False:
+        if year == False or day == False:
             end = datetime.date.today().replace(month = to_m, day = to_d) - datetime.timedelta(days = 1)
-        elif year == False and to_d == 1:
-            end = datetime.date.today().replace(month = to_m, day = to_d, year = to_y) - datetime.timedelta(days = 1)
         else:
             end = datetime.date.today().replace(month = to_m, day = to_d, year = to_y)
 
@@ -409,7 +407,6 @@ class TradeLog:
             print('No trades found')
 
     def view_trades_date(self):
-        passed = True
         inc_day = False
         month = input('Enter a month (1-12)\n')
         year = input('Enter a year (2017-2018)\n')
