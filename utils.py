@@ -175,4 +175,15 @@ def day_check(d):
         return False
     else:
         return True
+
+def day_ext(d):
+    if d % 10 == 1:
+        return 'st'
+    if d % 10 == 2:
+        return 'nd'
+    if d % 10 == 3:
+        return 'rd'
+    if (d % 10 >= 4) or (d % 10 == 0):
+        return 'th'
+    
         
