@@ -288,7 +288,10 @@ class TradeLog:
                 to_m = month
                 to_y = year
             
-            print('Viewing ' + utils.get_month(month) + ' only\n')
+            if day == False:
+                print('Viewing ' + utils.get_month(month) + ' only\n')
+            else:
+                print('Viewing ' + utils.get_month(month) + ' ' + str(to_d) + utils.day_ext(to_d) + ' only\n')
 
         if year == False or day == False:
             end = datetime.date.today().replace(month = to_m, day = to_d) - datetime.timedelta(days = 1)
