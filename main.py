@@ -332,6 +332,9 @@ class TradeLog:
             print(format_header)
             total_profit = 0
             total_loss = 0
+            comm_g = 0
+            comm_c = 0
+            comm_t = 0
             total_comm = 0
             positions = []
             exits = []
@@ -349,7 +352,13 @@ class TradeLog:
                 else:
                     total_loss += row[13]
 
-                total_comm += row[11] + row[12]
+                if row[10] == 'ibg':
+                    comm_g += row[11] + row[12]
+                elif row[10] == 'ibc':
+                    comm_c += row[11] + row[12]
+                else:
+                    comm_t += row[11] + row[12]
+
                 comm = row[11] + row[12]
                 positions.append(row[4])
                 exits.append({'exit': row[14], 'status': row[17]})
@@ -372,6 +381,7 @@ class TradeLog:
                     print_row = '{0:<3d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8} {9:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], utils.format_price(row[2]), utils.format_price(row[5]))
                 print(print_row)    
 
+            total_comm = comm_g + comm_c + comm_t
             after_comm = (total_profit + total_loss) - total_comm
             pos_sum = utils.sum_positions(positions)
             exit_early = utils.sum_exit_early(exits)
@@ -403,6 +413,7 @@ class TradeLog:
             print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
             print('Open trades: ' + str(status_sum[0]) + ' Closed trades: ' + str(status_sum[1]))
             print('Accounts: TOS: ' + str(acc_sum[0]) + ' IBG: ' + str(acc_sum[1]) + ' IBC: ' + str(acc_sum[2])) 
+            print('Commissions: IBG: $' + str(comm_g) + ' IBC: $' + str(comm_c) + ' TOS: $' + str(comm_t))
             if o == False:
                 print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
                 print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
