@@ -331,15 +331,7 @@ class TradeLog:
                 format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8} {9:<8}'.format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:PRICE', 'STOP')
             print(format_header)
             total_profit = total_loss = comm_g = comm_c = comm_t = total_comm = total_trades = 0
-            positions = []
-            exits = []
-            results = []
-            statuses = []
-            accounts = []
-            symbols = []
-            t_results = []
-            g_results = []
-            b_results = []
+            positions, exits, results, statuses, accounts, symbols, t_results, g_results, b_results = [], [], [], [], [], [], [], [], []
             for row in rows:
                 if row[13] > 0:
                     total_profit += row[13]
