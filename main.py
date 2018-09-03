@@ -703,24 +703,24 @@ class TradeLog:
             for row in r:
                 if row[4] == 'ibg':
                     if row[2] != None:
-                        if row[2].strftime('%Y-%m-%d') >= str(t):
+                        if str(row[2]) >= str(t):
                             g_en += row[0]
                     if row[3] != None:
-                        if row[3].strftime('%Y-%m-%d') >= str(t):
+                        if str(row[3]) >= str(t):
                             g_ex += row[1]
                 elif row[4] == 'ibc':
                     if row[2] != None:
-                        if row[2].strftime('%Y-%m-%d') >= str(t):
+                        if str(row[2]) >= str(t):
                             b_en += row[0]
                     if row[3] != None:
-                        if row[3].strftime('%Y-%m-%d') >= str(t):
+                        if str(row[3]) >= str(t):
                             b_ex += row[1]
                 else:
                     if row[2] != None:
-                        if row[2].strftime('%Y-%m-%d') >= str(t):
+                        if str(row[2]) >= str(t):
                             t_en += row[0]
                     if row[3] != None:
-                        if row[3].strftime('%Y-%m-%d') >= str(t):
+                        if str(row[3]) >= str(t):
                             t_ex += row[1]
 
             t_g = g_en + g_ex
