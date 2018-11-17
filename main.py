@@ -10,6 +10,7 @@ class TradeLog:
     accounts = ['tos', 'ibg', 'ibc']
     table_trades = 'trades'
     table_rules = 'trade_rules'
+    table_lessons = 'trade_lessons'
     table_actions = 'actions'
     table_watchlist = 'watchlist'
     table_ideas = 'trade_ideas'
@@ -44,7 +45,8 @@ class TradeLog:
             '16. View days profit/loss',
             '17. View trade by ID',
             '18. View open expiration dates',
-            '19. View profit/loss by symbol'
+            '19. View profit/loss by symbol',
+            '20. Show trading lessons'
         ]
 
         for item in menu_list:
@@ -93,6 +95,19 @@ class TradeLog:
                 cur.close()
 
         print('Total Rules: ' + str(counter - 1))
+
+    def show_lessons(self):
+        utils.title('Trading Lessons Learned')
+        q = "SELECT lesson FROM " + self.table_lessons + " ORDER BY RAND()"
+        counter = 1
+        print('Press ENTER to continue viewing each trading lesson & "q" to quit\n')
+        rows = self.run_query(q)
+        for row in rows:
+            print(str(counter) + ' - ' + row[0])
+            counter += 1
+            q = input()
+            if q == 'q':
+                break
 
     def check_last_rules_viewed(self):
         today = datetime.date.today()
@@ -770,7 +785,8 @@ options = {
     16 : t.view_days,
     17 : t.view_trade_by_id,
     18 : t.view_open_ex_dates,
-    19 : t.results_by_symbol
+    19 : t.results_by_symbol,
+    20 : t.show_lessons
 }
 
 while True:
