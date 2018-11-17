@@ -25,32 +25,10 @@ class TradeLog:
 
     def menu(self):
         utils.title('Menu')
-
-        menu_list = [
-            '1.  View trades - current month',
-            '2.  Add new trade',
-            '3.  Update a trade',
-            '4.  Remove a trade',
-            '5.  View all open trades',
-            '6.  View menu',
-            '7.  View trading rules',
-            '8.  Exit program',
-            '9.  Show watchlist',
-            '10. Show weekly trade ideas',
-            '11. Add trade idea',
-            '12. View trades - certain date or month',
-            '13. View notes on trades exited early',
-            '14. View trade reasons on open trades',
-            '15. View notes on losing trades',
-            '16. View days profit/loss',
-            '17. View trade by ID',
-            '18. View open expiration dates',
-            '19. View profit/loss by symbol',
-            '20. Show trading lessons'
-        ]
-
-        for item in menu_list:
-            print(item)
+        q = "SELECT * FROM menu"
+        menu = self.run_query(q)
+        for item in menu:
+            print('{0:<3} {1:<2}'.format(str(item[0]) + '.', item[1]))
 
     def show_rules(self):
         utils.title('Trading Rules')
