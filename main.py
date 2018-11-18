@@ -617,6 +617,9 @@ class TradeLog:
             print('DB error: ' + e)
             return False
 
+    def remove_trade(self):
+        print('\nOption not availabe currently')
+
     def results_by_symbol(self):
         utils.title('Results by Symbol')
         symbol = input('Enter symbol: ')
@@ -749,26 +752,27 @@ t.ib_minimums()
 options = {
     1 : t.view_trades,
     2 : t.trade_entry,
-    5 : t.view_open,
-    6 : t.menu,
-    7 : t.show_rules,
-    8 : utils.exit_app,
-    9 : t.show_watchlist,
-    10 : t.show_trade_plan,
-    11 : t.add_idea,
-    12 : t.view_trades_date,
-    13 : t.view_exit_notes,
-    14 : t.trade_reasons,
-    15 : t.loss_notes,
-    16 : t.view_days,
-    17 : t.view_trade_by_id,
-    18 : t.view_open_ex_dates,
-    19 : t.results_by_symbol,
-    20 : t.show_lessons
+    3 : t.remove_trade,
+    4 : t.view_open,
+    5 : t.menu,
+    6 : t.show_rules,
+    7 : utils.exit_app,
+    8 : t.show_watchlist,
+    9 : t.show_trade_plan,
+    10 : t.add_idea,
+    11 : t.view_trades_date,
+    12 : t.view_exit_notes,
+    13 : t.trade_reasons,
+    14 : t.loss_notes,
+    15 : t.view_days,
+    16 : t.view_trade_by_id,
+    17 : t.view_open_ex_dates,
+    18 : t.results_by_symbol,
+    19 : t.show_lessons
 }
 
 while True:
-    option = input('\nChoose option (6 => menu)\n')
+    option = input('\nChoose option (5 => menu)\n')
     entered = utils.validate_int(option)
 
     if(entered != False):
