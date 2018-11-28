@@ -406,11 +406,14 @@ class TradeLog:
         rows = self.run_query(new_q)
         total = 0
         days = 0
+        avg = 0
         for r in rows:
             total = r[0]
             days = r[1]
 
-        avg = total / days
+        if days > 0:
+            avg = total / days
+            
         return avg
 
 
