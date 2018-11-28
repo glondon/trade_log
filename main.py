@@ -374,7 +374,7 @@ class TradeLog:
             print('{0:<21} {1:6}'.format('Net proft/loss: ', '$' + str(total_profit + total_loss)))
             print('{0:<21} {1:6}'.format('Total commissions: ', '$' + str(total_comm)))     
             print('{0:<21} {1:6}'.format('Final net results: ', '$' + str(after_comm)))   
-            if o == False:
+            if o == False and day == False:
                 if month == today.month and now_yr == today.year:
                     open_locked = self.get_locked_open()
                     if open_locked > 0:
