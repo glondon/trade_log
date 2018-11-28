@@ -396,8 +396,26 @@ class TradeLog:
             if o == False:
                 print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
                 print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
+                avg = self.calc_avg(query)
+                print('Average Trades per Day: ' + str(avg))
         else:
             print('No trades found')
+
+    def calc_avg(self, q):
+        new_q = q.replace("SELECT *", "SELECT COUNT(*) AS total, COUNT(DISTINCT entry_date) AS total_days")
+        rows = self.run_query(new_q)
+        total = 0
+        days = 0
+        avg = 0
+        for r in rows:
+            total = r[0]
+            days = r[1]
+
+        if days > 0:
+            avg = total / days
+            
+        return avg
+
 
     def view_trades_date(self):
         inc_day = False
