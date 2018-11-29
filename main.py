@@ -397,7 +397,7 @@ class TradeLog:
                 print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
                 print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
                 avg = self.calc_avg(query)
-                print('Average Trades per Day: ' + str(avg))
+                print('Average trades per day: ' + str(avg))
         else:
             print('No trades found')
 
