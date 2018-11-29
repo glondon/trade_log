@@ -414,7 +414,7 @@ class TradeLog:
         if days > 0:
             avg = total / days
             
-        return avg
+        return round(avg, 2)
 
 
     def view_trades_date(self):
