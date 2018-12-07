@@ -300,9 +300,9 @@ class TradeLog:
 
         if o == False:
             if day == False:
-                query += " WHERE exit_date >= '" + str(begin) + "'"
+                query += " WHERE exit_date >= '" + str(begin) + "' AND status = 'closed'"
             else:
-                query += " WHERE entry_date = '" + str(begin) + "'"
+                query += " WHERE entry_date = '" + str(begin) + "' AND status = 'closed'"
             if m_opt == False:
                 pass
             else:
