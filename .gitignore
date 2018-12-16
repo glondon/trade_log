@@ -1,2 +1,9 @@
 .idea/*
 __pycache__/*
+
+app/notes.txt
+app/db.sqlite3
+app/trade_log
+app/log/migrations
+app/log/__pycache__
+app/app/__pycache__
