@@ -1,0 +1,10 @@
+{% extends 'log/layout.html' %}
+
+{% block content %}
+    <h3>{{title}}</h3>
+    <ul>
+        {% for trade in trades %}
+            <li><a href="/log/details/{{trade.id}}">{{trade.symbol}}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
