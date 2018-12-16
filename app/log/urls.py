@@ -5,3 +5,5 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^details/(?P<id>\d+)/$', views.details, name='details')
 ]
+
+handler404 = 'log.views.handler404'
