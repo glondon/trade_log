@@ -19,3 +19,6 @@ def details(request, id):
         'trade': trade
     }
     return render(request, 'log/details.html', data)
+
+def handler404(request, exception):
+    return render(request, 'log/404.html', locals())
