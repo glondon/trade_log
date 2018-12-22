@@ -5,12 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <title>Trade Log</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
 <header class="container">
     <h1>Trade Log</h1>
+    <!--TODO user auth temp - remove-->
+    {% if user.is_authenticated %}
+        <p>Logged in</p>
+    {% else %}
+        <p>Not logged in</p>
+    {% endif %}
 </header>
 <div class="container-body">
+    {% if messages %}
+        <ul>
+        {% for msg in messages %}
+            <li>{{msg}}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
     {% block content %}
     {% endblock %}
 </div>
