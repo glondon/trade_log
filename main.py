@@ -324,12 +324,20 @@ class TradeLog:
                 format_header = '{0:3} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8} {9:<8}'.format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:PRICE', 'STOP')
             print(format_header)
             total_profit = total_loss = comm_g = comm_c = comm_t = total_comm = total_trades = 0
-            positions, exits, results, statuses, accounts, symbols, t_results, g_results, b_results = [], [], [], [], [], [], [], [], []
+            positions, exits, results, statuses, accounts, symbols, t_results, g_results, b_results, loss_diff = [], [], [], [], [], [], [], [], [], []
             for row in rows:
                 if row[13] > 0:
                     total_profit += row[13]
                 else:
                     total_loss += row[13]
+                    if row[13] < 0 and row[1] == 'ES':
+                        if row[2] > row[3]:
+                            diff = row[2] - row[3]
+                        else:
+                            diff = row[3] - row[2]
+                        
+                        if diff > 0:
+                            loss_diff.append(diff)
 
                 if row[10] == 'ibg':
                     comm_g += row[11] + row[12]
@@ -398,8 +406,23 @@ class TradeLog:
                 print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
                 avg = self.calc_avg(query)
                 print('Average trades per day: ' + str(avg))
+                if len(loss_diff) > 0:
+                    avg_loss = self.calc_avg_loss(loss_diff)
+                    print('Average points lossed per trade (ES full future only): ' + str(avg_loss) + ' points')
         else:
             print('No trades found')
+
+    def calc_avg_loss(self, diff):
+        total = len(diff)
+        points = 0
+        avg = 0
+        for d in diff:
+            points += d
+        
+        if total > 0:
+            avg = points / total
+
+        return round(avg)
 
     def calc_avg(self, q):
         new_q = q.replace("SELECT *", "SELECT COUNT(*) AS total, COUNT(DISTINCT entry_date) AS total_days")
