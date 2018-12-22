@@ -1,0 +1,17 @@
+{% extends 'log/layout.html' %}
+
+{% block content %}
+   <div>
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Register</legend>
+            {{form.as_p}}
+        </fieldset>
+        <button type="submit">Register</button>
+    </form>
+    <div>
+        <small>Already have an account? <a href="{{url 'login'}}">Sign In</a></small>
+    </div>
+   </div>
+{% endblock %}

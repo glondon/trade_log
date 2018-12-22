@@ -1,0 +1,7 @@
+{% extends 'log/layout.html' %}
+<h2>Logged out</h2>
+{% block content %}\
+    <div>
+        <small><a href="{{url 'login'}}">Log in again?</a></small>
+    </div>
+{% endblock %}
