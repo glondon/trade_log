@@ -4,7 +4,7 @@
     <h3>{{title}}</h3>
     <ul>
         {% for trade in trades %}
-            <li><a href="../details/{{trade.id}}">{{trade.symbol}}</a></li>
+            <li><a href="../details/{{trade.id}}">{{trade.symbol}}</a></li><!--TODO use url '' here-->
         {% endfor %}
     </ul>
 {% endblock %}
