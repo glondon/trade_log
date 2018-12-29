@@ -408,7 +408,7 @@ class TradeLog:
                 print('Average trades per day: ' + str(avg))
                 if len(loss_diff) > 0:
                     avg_loss = self.calc_avg_loss(loss_diff)
-                    print('Average points lossed per trade (ES full future only): ' + str(avg_loss) + ' points')
+                    print('Average points lossed per trade (ES full future only): -' + str(avg_loss) + ' points')
         else:
             print('No trades found')
 
