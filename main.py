@@ -443,7 +443,7 @@ class TradeLog:
     def view_trades_date(self):
         inc_day = False
         month = input('Enter a month (1-12)\n')
-        year = input('Enter a year (2017-2018)\n')
+        year = input('Enter a year (2017-present)\n')
         m_o = input("View only selected month's range? (y/n)\n")
         month_options = ['y', 'n']
 

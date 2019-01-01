@@ -1,4 +1,5 @@
 import sys
+import datetime
 
 def exit_app():
     sys.exit('Trade Log exited')
@@ -164,7 +165,10 @@ def month_check(m):
         return False
 
 def year_check(y):
-    years = [2017, 2018]
+    now_yr = datetime.datetime.today().year
+    prev1 = now_yr - 1
+    prev2 = now_yr - 2
+    years = [prev2, prev1, now_yr]
     if y in years:
         return True
     else:
