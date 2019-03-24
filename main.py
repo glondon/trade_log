@@ -15,6 +15,7 @@ class TradeLog:
     table_watchlist = 'watchlist'
     table_ideas = 'trade_ideas'
     table_reasons = 'trade_reasons'
+    MAX_LOSS = 5
 
     def __init__(self):
         try:
@@ -251,6 +252,7 @@ class TradeLog:
     def view_trades(self, month = False, year = False, day = False, o = False, m_opt = False):
         today = datetime.datetime.today()
         now_yr = today.year
+        break_rule_stops = 0
         if month == False:
             month = today.month
         to_d = 1
@@ -335,6 +337,8 @@ class TradeLog:
                             diff = row[2] - row[3]
                         else:
                             diff = row[3] - row[2]
+                        if row[2] - row[5] > self.MAX_LOSS or row[5] - row[2] > self.MAX_LOSS:
+                        	break_rule_stops += 1
                         
                         if diff > 0:
                             loss_diff.append(diff)
@@ -409,6 +413,7 @@ class TradeLog:
                 if len(loss_diff) > 0:
                     avg_loss = self.calc_avg_loss(loss_diff)
                     print('Average points lossed per trade (ES full future only): -' + str(avg_loss) + ' points')
+                    print('Number of times broke rules on ' + str(self.MAX_LOSS) + ' point ES stop: ' + str(break_rule_stops))
         else:
             print('No trades found')
 
