@@ -52,6 +52,7 @@ def sum_statuses(values):
 def win_rate(values):
     wins = 0
     losses = 0
+    breakeven = 0
     counter = 0
     sum = 0
     lrg = max(values)
@@ -61,8 +62,11 @@ def win_rate(values):
         if x < 0:
             losses += 1
             counter += 1
-        elif x > 0:
+        elif x > 0 and x > 25:
             wins += 1
+            counter += 1
+        else:
+            breakeven += 1
             counter += 1
 
     if wins > 0 and counter > 0:
@@ -75,7 +79,7 @@ def win_rate(values):
     else:
         avg = float(0)
 
-    return [wins, losses, win_rate, avg, lrg, sml]
+    return [wins, losses, win_rate, avg, lrg, sml, breakeven]
 
 def sum_exit_early(values):
     times = 0
