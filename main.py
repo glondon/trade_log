@@ -398,7 +398,7 @@ class TradeLog:
             print('\nTotal trades: ' + str(total_trades))
             print('Total long: ' + str(pos_sum[0]) + ' Total short: ' + str(pos_sum[1]))
             print('Trades exited early: ' + str(exit_early[0]) + ' Good exits: ' + str(exit_early[1]))
-            print('Wins: ' + str(win_rate[0]) + ' Losses: ' + str(win_rate[1]) + ' Win Rate: ' + str(round(win_rate[2], 2)) 
+            print('Wins: ' + str(win_rate[0]) + ' Losses: ' + str(win_rate[1]) + ' Breakeven: ' + str(win_rate[6]) + ' Win Rate: ' + str(round(win_rate[2], 2)) 
                 + '%' + ' Average: $' + str(round(win_rate[3], 2)))
             minimum = '$' + str(win_rate[5]) if win_rate[5] < 0 else 'No losses'
             print('Largest Profit: $' + str(win_rate[4]) + ' Largest Loss: ' + minimum)
