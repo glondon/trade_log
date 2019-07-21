@@ -15,6 +15,7 @@ class TradeLog:
     table_watchlist = 'watchlist'
     table_ideas = 'trade_ideas'
     table_reasons = 'trade_reasons'
+    table_plan = 'trade_plan'
     MAX_LOSS = 5
 
     def __init__(self):
@@ -782,6 +783,14 @@ class TradeLog:
                 print('TOS ' + c + ' commissions: $' + str(t_t))
 
             print('Total spent: $' + str(t_g + t_b + t_t))
+
+    def show_weekly_plan(self):
+    	utils.title('Weekly Trading Plan')
+    	q = "SELECT plan, plan_date FROM " + self.table_plan + " ORDER BY id DESC LIMIT 1"
+    	r = self.run_query(q, True)
+    	print('Plan for the week beginning on: ' + str(r[1]))
+    	print('---------------------------------------')
+    	print(r[0])
         
 
 # class end - start running
@@ -814,7 +823,8 @@ options = {
     16 : t.view_trade_by_id,
     17 : t.view_open_ex_dates,
     18 : t.results_by_symbol,
-    19 : t.show_lessons
+    19 : t.show_lessons,
+    20 : t.show_weekly_plan
 }
 
 while True:
