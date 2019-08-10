@@ -250,7 +250,7 @@ class TradeLog:
         else:
             print('Nothing entered')
 
-    def view_trades(self, month = False, year = False, day = False, o = False, m_opt = False):
+    def view_trades(self, month = False, year = False, day = False, o = False, m_opt = False, a = False):
         today = datetime.datetime.today()
         now_yr = today.year
         break_rule_stops = 0
@@ -313,11 +313,13 @@ class TradeLog:
                     query += " AND exit_date <= '" + str(end) + "'"
                 else:
                     query += " OR exit_date = '" + str(end) + "'"
-
-            query += " ORDER BY exit_date DESC"
-            
         else:
-            query += " WHERE status = 'open' ORDER BY entry_date DESC"
+            query += " WHERE status = 'open'"
+
+        if a != False:
+        	query += " AND account = '" + a + "'"
+
+        query += " ORDER BY entry_date DESC"
 
         rows = self.run_query(query)
         if rows != False:
@@ -791,6 +793,25 @@ class TradeLog:
     	print('Plan for the week beginning on: ' + str(r[1]))
     	print('---------------------------------------')
     	print(r[0])
+
+    def view_by_account(self):
+    	utils.title('Trades By Account')
+    	account = input('Enter an account\n')
+    	if account.lower() not in self.accounts:
+    		print('Not a valid account\n')
+    		return
+    	opt = ['open', 'closed']
+    	o = False
+    	t = input('Open or Closed trades\n')
+    	if t.lower() not in opt:
+    		print('Not a valid type\n')
+    		return
+    	
+    	if t.lower() == 'open':
+    		o = True
+    		
+    	self.view_trades(False, False, False, o, False, account)
+
         
 
 # class end - start running
@@ -824,7 +845,8 @@ options = {
     17 : t.view_open_ex_dates,
     18 : t.results_by_symbol,
     19 : t.show_lessons,
-    20 : t.show_weekly_plan
+    20 : t.show_weekly_plan,
+    21 : t.view_by_account
 }
 
 while True:
