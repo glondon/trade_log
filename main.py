@@ -319,7 +319,10 @@ class TradeLog:
         if a != False:
         	query += " AND account = '" + a + "'"
 
-        query += " ORDER BY entry_date DESC"
+        if o == False:
+        	query += " ORDER BY exit_date DESC"
+        else:
+        	query += " ORDER BY entry_date DESC"
 
         rows = self.run_query(query)
         if rows != False:
@@ -809,7 +812,7 @@ class TradeLog:
     	
     	if t.lower() == 'open':
     		o = True
-    		
+
     	self.view_trades(False, False, False, o, False, account)
 
         
