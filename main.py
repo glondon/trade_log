@@ -813,7 +813,7 @@ class TradeLog:
     	if t.lower() == 'open':
     		o = True
 
-    	self.view_trades(False, False, False, o, False, account)
+    	self.view_trades(False, False, False, o, False, account.lower())
 
         
 
