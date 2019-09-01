@@ -338,7 +338,7 @@ class TradeLog:
                     total_profit += row[13]
                 else:
                     total_loss += row[13]
-                    if row[13] < 0 and row[1] == 'ES':
+                    if row[13] < 0 and (row[1] == 'ES' or row[1] == 'MES'):
                         if row[2] > row[3]:
                             diff = row[2] - row[3]
                         else:
@@ -413,13 +413,13 @@ class TradeLog:
             print('Commissions: IBG: $' + str(comm_g) + ' IBC: $' + str(comm_c) + ' TOS: $' + str(comm_t))
             if o == False:
                 print('Account Results: TOS $' + str(acc_results[0]) + ' IBG: $' + str(acc_results[1]) + ' IBC: $' + str(acc_results[2]))
-                print('Number of times ES traded: ' + str(utils.traded_most(symbols)))
+                print('Number of times ES/MES traded: ' + str(utils.traded_most(symbols)))
                 avg = self.calc_avg(query)
                 print('Average trades per day: ' + str(avg))
                 if len(loss_diff) > 0:
                     avg_loss = self.calc_avg_loss(loss_diff)
-                    print('Average points lost per trade (ES full future only): -' + str(avg_loss) + ' points')
-                    print('Number of times broke rules on ' + str(self.MAX_LOSS) + ' point ES stop: ' + str(break_rule_stops))
+                    print('Average points lost per trade (ES/MES full futures only): -' + str(avg_loss) + ' points')
+                    print('Number of times broke rules on ' + str(self.MAX_LOSS) + ' point ES/MES stop: ' + str(break_rule_stops))
         else:
             print('No trades found')
 

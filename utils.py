@@ -20,8 +20,8 @@ def format_price(value):
                 return format(value, '.2f')
 
 def traded_most(values):
-    #only counting ES for now - since I know it's the favorite
-    return values.count('ES')
+    #only counting ES & MES for now
+    return values.count('ES') + values.count('MES')
 
 def sum_accounts(values):
     tos = 0
