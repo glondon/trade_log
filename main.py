@@ -16,7 +16,7 @@ class TradeLog:
     table_ideas = 'trade_ideas'
     table_reasons = 'trade_reasons'
     table_plan = 'trade_plan'
-    MAX_LOSS = 5
+    MAX_LOSS = 10
 
     def __init__(self):
         try:
