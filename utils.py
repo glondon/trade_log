@@ -59,15 +59,13 @@ def win_rate(values):
     sml = min(values)
     for x in values:
         sum += x
+        counter += 1
         if x < 0:
             losses += 1
-            counter += 1
-        elif x > 0 and x > 25:
+        elif x >= 25:
             wins += 1
-            counter += 1
         else:
             breakeven += 1
-            counter += 1
 
     if wins > 0 and counter > 0:
         win_rate = wins / counter * 100
