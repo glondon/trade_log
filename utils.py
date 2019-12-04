@@ -62,7 +62,7 @@ def win_rate(values):
         if x < 0:
             losses += 1
             counter += 1
-        elif x > 0 and x > 25:
+        elif x >= 25:
             wins += 1
             counter += 1
         else:
