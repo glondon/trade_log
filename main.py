@@ -815,6 +815,25 @@ class TradeLog:
 
     	self.view_trades(False, False, False, o, False, account.lower())
 
+    def view_investments(self):
+        utils.title('Investments')
+        q = "SELECT id, symbol, entry_price, shares, dividend FROM investments WHERE status = 'open'"
+        r = self.run_query(q)
+        if r != False:
+            for row in r:
+                a = self.get_inv_adjusts(row[0])
+                if a != False:
+                    for adjs in a:
+                        pprint(str(adjs[0]))
+
+    def get_inv_adjusts(self, id):
+        q = "SELECT shares, price FROM inv_adjusts WHERE inv_id = " + str(id)
+        r = self.run_query(q)
+        if r != False:
+            return r
+        return False
+
+
         
 
 # class end - start running
@@ -849,7 +868,8 @@ options = {
     18 : t.results_by_symbol,
     19 : t.show_lessons,
     20 : t.show_weekly_plan,
-    21 : t.view_by_account
+    21 : t.view_by_account,
+    22 : t.view_investments
 }
 
 while True:
