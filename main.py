@@ -1,4 +1,4 @@
-import pymysql
+import db as dbClass
 import datetime
 from datetime import timedelta
 import utils
@@ -20,7 +20,7 @@ class TradeLog:
 
     def __init__(self):
         try:
-            self.db = pymysql.connect(host = 'localhost', port = 3306, user = 'root', passwd = '', db = 'trade_log')
+            self.db = dbClass.DB()
         except Exception as e:
             print('Unable to connect to DB\n' + str(e))
             utils.exit_app()
@@ -28,7 +28,7 @@ class TradeLog:
     def menu(self):
         utils.title('Menu')
         q = "SELECT * FROM menu"
-        menu = self.run_query(q)
+        menu = self.db.run_query(q)
         for item in menu:
             print('{0:<3} {1:<2}'.format(str(item[0]) + '.', item[1]))
 
@@ -81,7 +81,7 @@ class TradeLog:
         q = "SELECT lesson FROM " + self.table_lessons + " ORDER BY RAND()"
         counter = 1
         print('Press ENTER to continue viewing each trading lesson & "q" to quit\n')
-        rows = self.run_query(q)
+        rows = self.db.run_query(q)
         for row in rows:
             print(str(counter) + ' - ' + row[0])
             counter += 1
@@ -92,7 +92,7 @@ class TradeLog:
     def check_last_rules_viewed(self):
         today = datetime.date.today()
         query = "SELECT viewed_rules FROM " + self.table_actions + " ORDER BY viewed_rules DESC LIMIT 1"
-        row = self.run_query(query, True)
+        row = self.db.run_query(query, True)
         if row != False:
             diff = (today - row[0]).days
             if diff >= 7:
@@ -102,7 +102,7 @@ class TradeLog:
         today = datetime.date.today()
         to_show = []
         query = "SELECT symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00'"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             for row in rows:
                 if (today - row[1]).days >= -7:
@@ -116,7 +116,7 @@ class TradeLog:
 
     def check_exit_date_open(self):
         query = "SELECT id, symbol FROM " + self.table_trades + " WHERE status = 'open' AND exit_date > '0000-00-00'"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             print('The following have not been closed properly:\n')
             for row in rows:
@@ -125,7 +125,7 @@ class TradeLog:
     def show_watchlist(self):
         utils.title('Watchlist')
         query = "SELECT ticker FROM " + self.table_watchlist + " ORDER BY ticker"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             watchlist = ''
             total = 0
@@ -149,7 +149,7 @@ class TradeLog:
         utils.title('Trade ideas')
         begin_week = datetime.date.today() - datetime.timedelta(days = datetime.date.today().isoweekday() % 7)
         query = "SELECT ticker, notes, idea_date FROM " + self.table_ideas + " WHERE idea_date >= '" + str(begin_week) + "' ORDER BY idea_date DESC"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             to_show = ''
             for row in rows:
@@ -324,7 +324,7 @@ class TradeLog:
         else:
         	query += " ORDER BY entry_date DESC"
 
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             if o == False:
                 format_header = '{0:4} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8}'.format('ID', 'SYMBOL', 'POS', 'EX:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:DATE')
@@ -437,7 +437,7 @@ class TradeLog:
 
     def calc_avg(self, q):
         new_q = q.replace("SELECT *", "SELECT COUNT(*) AS total, COUNT(DISTINCT entry_date) AS total_days")
-        rows = self.run_query(new_q)
+        rows = self.db.run_query(new_q)
         total = 0
         days = 0
         avg = 0
@@ -504,7 +504,7 @@ class TradeLog:
         #start with trades in most recent trading month
         begin = datetime.date.today().replace(day = 1)
         query = "SELECT symbol, notes FROM " + self.table_trades + " WHERE early_exit = 1 AND exit_date >= '" + str(begin) + "' ORDER BY exit_date"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             for row in rows:
                 print(row[0] + ' - ' + row[1])
@@ -516,7 +516,7 @@ class TradeLog:
         utils.title('Open Trade Reasons')
         #view all current open trades
         query = "SELECT symbol, entry, " + self.table_reasons + " FROM trades WHERE status = 'open' ORDER BY symbol"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             for row in rows:
                 print(row[0] + ' ' + str(utils.format_price(row[1])) + ' ' + row[2])
@@ -549,7 +549,7 @@ class TradeLog:
             return
 
         query = "SELECT symbol, notes, result FROM " + self.table_trades + " WHERE result < 0 AND status = 'closed' AND exit_date >= '" + str(start) + "'"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             total = 0
             for row in rows:
@@ -597,7 +597,7 @@ class TradeLog:
         viewing += ' days'
         start = datetime.date.today() - timedelta(days = sel)
         query = "SELECT SUM(result), exit_date FROM " + self.table_trades + " WHERE exit_date >= '" + str(start) + "' GROUP BY exit_date ORDER BY exit_date DESC"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             total = 0
             print(viewing + '\n')
@@ -636,7 +636,7 @@ class TradeLog:
 
     def get_locked_open(self):
         query = "SELECT result FROM " + self.table_trades + " WHERE status = 'open' AND result > 0"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             total = 0
             for row in rows:
@@ -648,26 +648,12 @@ class TradeLog:
     def view_open_ex_dates(self):
         utils.title('Open expiration dates')
         query = "SELECT id, symbol, exp_date FROM " + self.table_trades + " WHERE status = 'open' AND exp_date > '0000-00-00' ORDER BY exp_date"
-        rows = self.run_query(query)
+        rows = self.db.run_query(query)
         if rows != False:
             for row in rows:
                 print('{0:5} {1:13} {2:12}'.format('ID: ' + str(row[0]), 'SYMBOL: ' + row[1], 'EXPIRES: ' + str(row[2])))
         else:
             print('No results')
-        
-    def run_query(self, q, one = False):
-        try:
-            cur = self.db.cursor()
-            cur.execute(q)
-            if cur.rowcount > 0:
-                if one == False:
-                    return cur.fetchall()
-                else:
-                    return cur.fetchone()
-            return False
-        except ValueError as e:
-            print('DB error: ' + e)
-            return False
 
     def remove_trade(self):
         print('\nOption not availabe currently')
@@ -703,7 +689,7 @@ class TradeLog:
             q += " AND exit_date >= '" + str(begin) + "' AND exit_date <= '" + str(end) + "'"
         q += " ORDER BY exit_date DESC"
     
-        r = self.run_query(q)
+        r = self.db.run_query(q)
         if r != False:
             t = 0
             t_p = 0
@@ -739,7 +725,7 @@ class TradeLog:
         t = datetime.date.today().replace(day = 1)
         c = utils.get_month(t.month)
         q = "SELECT entry_comm, exit_comm, entry_date, exit_date, account FROM " + self.table_trades + " WHERE (entry_date >= '" + str(t) + "' OR exit_date >= '" + str(t) + "')"
-        r = self.run_query(q)
+        r = self.db.run_query(q)
         if r != False:
             g_en = 0
             g_ex = 0
@@ -792,7 +778,7 @@ class TradeLog:
     def show_weekly_plan(self):
     	utils.title('Weekly Trading Plan')
     	q = "SELECT plan, plan_date FROM " + self.table_plan + " ORDER BY id DESC LIMIT 1"
-    	r = self.run_query(q, True)
+    	r = self.db.run_query(q, True)
     	print('Plan for the week beginning on: ' + str(r[1]))
     	print('---------------------------------------')
     	print(r[0])
@@ -818,7 +804,7 @@ class TradeLog:
     def view_investments(self):
         utils.title('Investments')
         q = "SELECT id, symbol, entry_price, shares, dividend FROM investments WHERE status = 'open'"
-        r = self.run_query(q)
+        r = self.db.run_query(q)
         if r != False:
             for row in r:
                 a = self.get_inv_adjusts(row[0])
@@ -828,7 +814,7 @@ class TradeLog:
 
     def get_inv_adjusts(self, id):
         q = "SELECT shares, price FROM inv_adjusts WHERE inv_id = " + str(id)
-        r = self.run_query(q)
+        r = self.db.run_query(q)
         if r != False:
             return r
         return False
