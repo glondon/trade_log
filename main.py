@@ -2,6 +2,7 @@ import db as dbClass
 import datetime
 from datetime import timedelta
 import utils
+import invest as investClass
 from pprint import pprint
 
 class TradeLog:
@@ -803,25 +804,11 @@ class TradeLog:
 
     def view_investments(self):
         utils.title('Investments')
-        q = "SELECT id, symbol, entry_price, shares, dividend FROM investments WHERE status = 'open'"
-        r = self.db.run_query(q)
-        if r != False:
-            for row in r:
-                a = self.get_inv_adjusts(row[0])
-                if a != False:
-                    for adjs in a:
-                        pprint(str(adjs[0]))
 
-    def get_inv_adjusts(self, id):
-        q = "SELECT shares, price FROM inv_adjusts WHERE inv_id = " + str(id)
-        r = self.db.run_query(q)
-        if r != False:
-            return r
-        return False
-
-
+        invest = investClass.Invest()
+        pprint(invest.get_investments())
         
-
+        
 # class end - start running
 
 t = TradeLog()
