@@ -20,12 +20,24 @@ class Invest:
         r = self.db.run_query(q)
         if r == False:
             return False
-        items = []
+
+        items = {}
+        adj = {}
         for row in r:
+            items['id'] = row[0]
+            items['symbol'] = row[1]
+            items['entry_price'] = row[2]
+            items['shares'] = row[3]
+            items['div'] = row[4]
+            items['adjs'] = []
             a = self.get_inv_adjusts(row[0])
             if a != False:
                 for adjs in a:
-                    items.append(str(adjs[0]))
+                    adj['id'] = row[0]
+                    adj['shares'] = adjs[0]
+                    adj['price'] = adjs[1]
+                    items['adjs'].append(adj)
+                    adj = {} # reset
 
         return items
 
