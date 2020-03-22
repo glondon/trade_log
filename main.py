@@ -804,9 +804,12 @@ class TradeLog:
 
     def view_investments(self):
         utils.title('Investments')
-
         invest = investClass.Invest()
-        pprint(invest.get_investments())
+        pprint(invest.get_investments())   
+
+    def investment_positions(self):
+        utils.title('Investment Positions')
+        invest = investClass.Invest()
         pprint(invest.calc_positions())
         
         
@@ -843,7 +846,8 @@ options = {
     19 : t.show_lessons,
     20 : t.show_weekly_plan,
     21 : t.view_by_account,
-    22 : t.view_investments
+    22 : t.view_investments,
+    23 : t.investment_positions
 }
 
 while True:
