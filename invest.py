@@ -100,15 +100,18 @@ class Invest:
         count = 0
         amount = 0
         shares = 0
+        dividends = 0
         for p in positions:
             commissions += p['commissions']
             count += 1
             amount += p['amount_invested']
             shares += p['shares']
+            dividends += p['est_annual_div']
 
         items['commissions'] = commissions
         items['positions'] = count
         items['invested'] = amount
         items['shares'] = shares
+        items['est_annual_dividends'] = dividends
         return items
 
