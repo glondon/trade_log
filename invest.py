@@ -84,6 +84,7 @@ class Invest:
             items['est_annual_div'] = shares * p['div']
             items['avg_price'] = round(amount / shares, 2)
             items['commissions'] = commissions
+            items['initial_entry_price'] = p['entry_price']
 
             positions.append(items)
 
