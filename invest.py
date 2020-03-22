@@ -16,7 +16,7 @@ class Invest:
             utils.exit_app()
 
     def get_investments(self):
-        q = "SELECT id, symbol, entry_price, shares, dividend, target, bail_area"
+        q = "SELECT id, symbol, entry_price, shares, dividend, target, bail_area, commission"
         q += " FROM " + self.invest_tbl + " WHERE status = 'open'"
         r = self.db.run_query(q)
         if r == False:
@@ -33,6 +33,7 @@ class Invest:
             items['div'] = row[4]
             items['target'] = row[5]
             items['bail_area'] = row[6]
+            items['commission'] = row[7]
             items['adjs'] = []
             a = self.get_inv_adjusts(row[0])
             if a != False:
@@ -41,6 +42,7 @@ class Invest:
                     adj['id'] = row[0]
                     adj['shares'] = adjs[0]
                     adj['price'] = adjs[1]
+                    adj['commission'] = adjs[2]
                     items['adjs'].append(adj)
 
             investments.append(items)
@@ -48,7 +50,7 @@ class Invest:
         return investments
 
     def get_inv_adjusts(self, id):
-        q = "SELECT shares, price FROM " + self.adj_tbl + " WHERE inv_id = " + str(id)
+        q = "SELECT shares, price, commission FROM " + self.adj_tbl + " WHERE inv_id = " + str(id)
         r = self.db.run_query(q)
         if r != False:
             return r
@@ -66,18 +68,22 @@ class Invest:
             items = {}
             shares = 0
             amount = 0
+            commissions = 0
             shares += p['shares']
             amount += p['entry_price'] * p['shares']
+            commissions += p['commission']
 
             for a in p['adjs']:
                 shares += a['shares']
                 amount += a['price'] * a['shares']
+                commissions += a['commission']
 
             items['symbol'] = p['symbol']
             items['shares'] = shares
             items['amount_invested'] = amount
             items['est_annual_div'] = shares * p['div']
             items['avg_price'] = round(amount / shares, 2)
+            items['commissions'] = commissions
 
             positions.append(items)
 
