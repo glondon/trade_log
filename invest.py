@@ -21,6 +21,7 @@ class Invest:
         if r == False:
             return False
 
+        investments = []
         items = {}
         adj = {}
         for row in r:
@@ -38,8 +39,10 @@ class Invest:
                     adj['price'] = adjs[1]
                     items['adjs'].append(adj)
                     adj = {} # reset
+            investments.append(items)
+            items = {} # reset
 
-        return items
+        return investments
 
     def get_inv_adjusts(self, id):
         q = "SELECT shares, price FROM " + self.adj_tbl + " WHERE inv_id = " + str(id)
