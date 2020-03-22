@@ -89,3 +89,26 @@ class Invest:
             positions.append(items)
 
         return positions
+
+    def calc_totals(self):
+        positions = self.calc_positions()
+        if positions == False:
+            return False
+
+        items = {}
+        commissions = 0
+        count = 0
+        amount = 0
+        shares = 0
+        for p in positions:
+            commissions += p['commissions']
+            count += 1
+            amount += p['amount_invested']
+            shares += p['shares']
+
+        items['commissions'] = commissions
+        items['positions'] = count
+        items['invested'] = amount
+        items['shares'] = shares
+        return items
+
