@@ -807,6 +807,7 @@ class TradeLog:
 
         invest = investClass.Invest()
         pprint(invest.get_investments())
+        pprint(invest.calc_positions())
         
         
 # class end - start running

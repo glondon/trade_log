@@ -22,9 +22,9 @@ class Invest:
             return False
 
         investments = []
-        items = {}
-        adj = {}
+        
         for row in r:
+            items = {}
             items['id'] = row[0]
             items['symbol'] = row[1]
             items['entry_price'] = row[2]
@@ -34,13 +34,13 @@ class Invest:
             a = self.get_inv_adjusts(row[0])
             if a != False:
                 for adjs in a:
+                    adj = {}
                     adj['id'] = row[0]
                     adj['shares'] = adjs[0]
                     adj['price'] = adjs[1]
                     items['adjs'].append(adj)
-                    adj = {} # reset
+
             investments.append(items)
-            items = {} # reset
 
         return investments
 
@@ -51,3 +51,31 @@ class Invest:
             return r
 
         return False
+
+    def calc_positions(self):
+        invests = self.get_investments()
+        if invests == False:
+            return False
+        
+        positions = []
+        
+        for p in invests:
+            items = {}
+            shares = 0
+            amount = 0
+            shares += p['shares']
+            amount = p['entry_price'] * p['shares']
+
+            for a in p['adjs']:
+                shares += a['shares']
+                amount += a['price'] * a['shares']
+
+            items['symbol'] = p['symbol']
+            items['shares'] = shares
+            items['amount_invested'] = amount
+            items['est_annual_div'] = shares * p['div']
+            items['avg_price'] = round(amount / shares, 2)
+
+            positions.append(items)
+            
+        return positions
