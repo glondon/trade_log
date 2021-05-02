@@ -329,7 +329,7 @@ class TradeLog:
             if o == False:
                 format_header = '{0:4} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8}'.format('ID', 'SYMBOL', 'POS', 'EX:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:DATE')
             else:
-                format_header = '{0:4} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8} {9:<8}'.format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:PRICE', 'STOP')
+                format_header = '{0:4} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5} {6:<8} {7:<8} {8:<8} {9:<6} {10:<5}'.format('ID', 'SYMBOL', 'POS', 'EN:DATE', 'ACC', 'COM', 'RESULT', 'STATUS', 'EN:PRICE', 'STOP', 'OP:EXP')
             print(format_header)
             total_profit = total_loss = comm_g = comm_c = comm_t = total_comm = total_trades = 0
             positions, exits, results, statuses, accounts, symbols, t_results, g_results, b_results, loss_diff = [], [], [], [], [], [], [], [], [], []
@@ -375,7 +375,7 @@ class TradeLog:
                 if o == False:
                     print_row = '{0:<4d} {1:<6} {2:<6} {3:<10} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8}'.format(row[0], row[1], row[4], str(row[8]), row[10], comm, row[13], row[17], str(row[7]))
                 else:
-                    print_row = '{0:<4d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8} {9:<8}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], utils.format_price(row[2]), utils.format_price(row[5]))
+                    print_row = '{0:<4d} {1:<6} {2:<6} {3:<8} {4:<5} {5:<5f} {6:<8f} {7:<8} {8:<8} {9:<6} {10:<5}'.format(row[0], row[1], row[4], str(row[7]), row[10], comm, row[13], row[17], utils.format_price(row[2]), utils.format_price(row[5]), str(row[18]))
                 print(print_row)    
 
             total_comm = comm_g + comm_c + comm_t
